@@ -43,6 +43,9 @@ future version).
 I retrieve data from Clearbit in a background thread because it
 may be time consuming.
 
+Normal responses are passed in the field `data` to differentiate
+them from error info and other possible auxiliary information.
+
 ## API
 
 I use the same POST request params as model field names.
