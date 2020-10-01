@@ -57,6 +57,9 @@ the DB too quick). I could create a
 Debian package or another kind of automatic installer, but I was
 not specified the exact operating system.
 
+I use Django channels (not REST) to notify about Crearbit information
+retrival asynchronously, because it may be slow.
+
 ## Architecture decisions
 
 I use `django.contrib.auth.User` as the base of my User model,
