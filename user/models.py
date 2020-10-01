@@ -14,6 +14,7 @@ clearbit.Person.version = '2019-12-19'
 
 
 class NetworkUser(AbstractUser):
+    # Don't rename fields. They are also HTTP params names.
     birth_date = models.DateField()
     location = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
