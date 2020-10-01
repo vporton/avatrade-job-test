@@ -26,6 +26,9 @@ debugging.
 
 `requests` for making HTTP(S) requests to external servers.
 
+Because it was said to use JWT but nothing about OAuth/OpenID Connect,
+I do it in an easy way using `django-rest-framework-jwt`.
+
 ## Architecture decisions
 
 I use `django.contrib.auth.User` as the base of my User model,
