@@ -29,7 +29,7 @@ class SignupView(MyAPIView):
                       'avatar']
 
         # may raise an exception
-        values = [request.POST[field.name] for field in all_fields if field.name in request.POST]
+        values = [request.POST[field] for field in all_fields if field in request.POST]
         password = request.POST['password']
 
         # Convert to the right format:
