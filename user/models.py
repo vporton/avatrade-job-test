@@ -1,4 +1,5 @@
 import math
+from json.decoder import JSONDecodeError
 from threading import Thread
 from urllib.parse import quote
 
@@ -8,6 +9,8 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.exceptions import ValidationError
+
+from core.misc import MyErrorResponse
 
 clearbit.key = settings.CLEARBIT_API_SECRET
 clearbit.Person.version = '2019-12-19'
@@ -42,11 +45,18 @@ class NetworkUser(AbstractUser):
         url = url_tmpl.format(quote(email), quote(settings.HUNTER_API_KEY))
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("Cannot connect to hunter.io for user email verification. Try again.")
+            return MyErrorResponse({"code": "EXT_01",
+                                   "message": "Cannot connect to hunter.io for user email verification. Try again.",
+                                   "field": "NONE"})
         try:
-            return response.json()['data']['result'] == 'deliverable'  # my understanding of "verifying email existence" in the technical task
-        except KeyError:
-            raise Exception("Cannot parse hunter.io response.")  # FIXME
+            if not response.json()['data']['result'] == 'deliverable':  # my understanding of "verifying email existence" in the technical task
+                return MyErrorResponse({"code": "USR_03",
+                                        "message": "Email does not verify.",
+                                        "field": "email"})
+        except (JSONDecodeError, KeyError):
+            return MyErrorResponse({"code": "EXT_01",
+                                    "message": "Cannot parse hunter.io response.",
+                                    "field": "NONE"})
 
     def fill_data_automatically(self):
         Thread(target=self.do_fill_data_automatically, args=()).start()

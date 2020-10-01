@@ -16,6 +16,7 @@ class MyErrorResponse(Response):
         # USR_04 invalid password
         # AUT_01 not authorized
         # PAR_01 parameter is missing
+        # EXT_01 external service failure
         status = {
             'USR': 400,
             'AUT': 401,

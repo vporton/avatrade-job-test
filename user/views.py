@@ -46,10 +46,12 @@ class SignupView(MyAPIView):
                                     "field": "password"})
         user.set_password(password)
 
-        if not NetworkUser.validate_new_user_email(user.email):  # TODO: Rename this function.
-            return MyErrorResponse({"code": "USR_03",
-                                    "message": "Email does not verify.",
-                                    "field": "email"})
+        email_validation_result = NetworkUser.validate_new_user_email(user.email)  # TODO: Rename this function.
+        if email_validation_result is not None:
+            return email_validation_result
+
         user.save()
+
         user.fill_data_automatically()  # Will run in background in a separate thread
+
         return Response({'code': "OK"})
