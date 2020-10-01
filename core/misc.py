@@ -13,6 +13,7 @@ class MyErrorResponse(Response):
         # USR_01 object not found
         # USR_02 invalid data
         # USR_03 email does not verify
+        # USR_04 invalid password
         # AUT_01 not authorized
         # PAR_01 parameter is missing
         status = {
