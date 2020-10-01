@@ -37,4 +37,4 @@ class SignupView(MyAPIView):
                                     "field": "email"})
         user.save()
         user.fill_data_automatically()  # Will run in background in a separate thread
-        return Response({'code': "OK"})  # FIXME # TODO: Also set password correctly (may be None)
+        return Response({'code': "OK"})  # TODO: Also set password correctly (may be None)
