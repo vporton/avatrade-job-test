@@ -42,6 +42,8 @@ class FullTestCase(TestCase):
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
+        # TODO: Test signing up with the same username or the same email.
+
     def test_main(self):
         """The test described in the tech specification."""
         pass
