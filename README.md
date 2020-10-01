@@ -38,6 +38,8 @@ To run only the "automated bot" described in the specification:
 ```sh
 ./manage.py test mytest.tests.FullTestCase.test_main
 ```
+(It is implemented using Django tests, because its task is related
+to testing.)
 
 ## Used packages
 
