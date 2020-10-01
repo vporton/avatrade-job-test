@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.misc import MyAPIView, MyErrorResponse
@@ -9,6 +10,8 @@ from user.models import NetworkUser
 
 
 class SignupView(MyAPIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         all_fields = ['username',
                       'first_name',
