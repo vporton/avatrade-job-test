@@ -29,7 +29,7 @@ class SignupView(MyAPIView):
                       'avatar']
 
         # may raise an exception
-        values = [request.POST[field] for field in all_fields if field in request.POST]
+        values = {field: request.POST[field] for field in all_fields if field in request.POST}
         password = request.POST['password']
         request.POST['username']
         request.POST['email']
@@ -42,7 +42,7 @@ class SignupView(MyAPIView):
             values['lat'] = float(values['lat'])
             values['lng'] = float(values['lng'])
 
-        user = NetworkUser(*values)
+        user = NetworkUser(**values)
 
         try:
             validate_password(password, user)
