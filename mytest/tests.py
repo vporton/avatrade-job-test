@@ -91,7 +91,7 @@ class FullTestCase(TestCase):
                 # TODO: Test posts with no link.
                 response = self.client.post('/post/new',
                                             {'title': title, 'text': text, 'link': "http://example.com"},
-                                            AUTHORIZATION=auth_header)
+                                            HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post.")
                 user_posts[i].append(response.json()['data']['post_id'])
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
@@ -129,7 +129,7 @@ class FullTestCase(TestCase):
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
                 self.client.post('/post/like',
                                  {'post_id': posts_to_like_by_this_user[post_to_like]},
-                                 AUTHORIZATION=auth_header)
+                                 HTTP_AUTHORIZATION=auth_header)
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
