@@ -71,7 +71,7 @@ class FullTestCase(TestCase):
             passwords[i] = User.objects.make_random_password()
             response = self.client.post('/user/signup',
                                         {'username': "user{}".format(i), 'password': passwords[i],
-                                         'email': 'porton@narod.ru'}) \
+                                         'email': 'porton@narod.ru'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user.")
             user_ids[i] = response.json()['data']['user_id']
 
