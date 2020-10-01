@@ -100,7 +100,7 @@ class FullTestCase(TestCase):
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 post_id = response.json()['data']['post_id']
                 user_posts[i].append(post_id)
-                print("Signed up user {} (ID {})".format(passwords[i]['username'], post_id))
+                print("Posted by user {} (post_id {})".format(passwords[i]['username'], post_id))
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
         # To ensure no user has reached max likes yet (not strictly necessary, but simplifies flow analysis):
@@ -143,7 +143,7 @@ class FullTestCase(TestCase):
                                  {'post_id': post_id},
                                  HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
-                print("User {} liked post number {} (ID {})".format(next_user_number, i, post_id))
+                print("User {} liked post_id {}".format(next_user_number, post_id))
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
