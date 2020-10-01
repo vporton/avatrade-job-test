@@ -5,6 +5,7 @@ A test Python task
 
 Settings are stored in `local_settings.py`:
 ```python
+DEBUG = False
 HUNTER_API_KEY = ...
 CLEARBIT_API_SECRET = ...
 ```
