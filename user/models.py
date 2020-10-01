@@ -30,8 +30,8 @@ class NetworkUser(AbstractUser):
     city = models.CharField(max_length=100, blank=True)    # TODO: To improve performance should be a foreign key
     state = models.CharField(max_length=100, blank=True)   # ditto
     country = models.CharField(max_length=100, blank=True) # ditto
-    lat = models.FloatField(default=float("NAN"))
-    lng = models.FloatField(default=float("NAN"))
+    lat = models.FloatField(null=True)
+    lng = models.FloatField(null=True)
     bio = models.TextField(blank=True)
     site = models.URLField(blank=True)
     avatar = models.URLField(blank=True)
