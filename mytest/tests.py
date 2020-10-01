@@ -8,7 +8,7 @@ import requests
 from django.conf import settings
 from django.test import TestCase, Client
 
-from user.models import NetworkUser
+from user.models import User
 
 
 class RealClient():
@@ -74,7 +74,7 @@ class FullTestCase(TestCase):
         passwords = []
         for i in range(numbers['number_of_users']):
             username = "user{}".format(i)
-            password = NetworkUser.objects.make_random_password()
+            password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})

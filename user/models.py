@@ -16,7 +16,7 @@ clearbit.key = settings.CLEARBIT_API_SECRET
 clearbit.Person.version = '2019-12-19'
 
 
-class NetworkUser(AbstractUser):
+class User(AbstractUser):
     # Don't rename fields. They are also HTTP params names.
     # username
     # first_name

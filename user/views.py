@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.misc import MyAPIView, MyErrorResponse
-from user.models import NetworkUser
+from user.models import User
 
 
 class SignupView(MyAPIView):
@@ -42,7 +42,7 @@ class SignupView(MyAPIView):
             values['lat'] = float(values['lat'])
             values['lng'] = float(values['lng'])
 
-        user = NetworkUser(**values)
+        user = User(**values)
 
         try:
             validate_password(password, user)
@@ -52,7 +52,7 @@ class SignupView(MyAPIView):
                                     "field": "password"})
         user.set_password(password)
 
-        email_verificiation_result = NetworkUser.verify_new_user_email(user.email)
+        email_verificiation_result = User.verify_new_user_email(user.email)
         if email_verificiation_result is not None:
             return email_verificiation_result
 

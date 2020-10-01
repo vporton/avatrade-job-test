@@ -1,6 +1,6 @@
 * Add more API endpoints.
 
-* "Invalid data (DB integrity check failed): UNIQUE constraint failed: user_networkuser.username"
+* "Invalid data (DB integrity check failed): UNIQUE constraint failed: user_user.username"
   is a bad error message.
 
 * Document API.

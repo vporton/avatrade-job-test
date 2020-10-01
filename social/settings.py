@@ -135,7 +135,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'user.NetworkUser'
+AUTH_USER_MODEL = 'user.User'
 
 SERVER_URL = "http://127.0.0.1:8000"
 

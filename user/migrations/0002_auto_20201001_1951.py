@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='networkuser',
+            model_name='user',
             name='birth_date',
             field=models.DateField(null=True),
         ),
