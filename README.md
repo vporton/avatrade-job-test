@@ -40,6 +40,9 @@ authentication. The drawback is unnecessary fields that may take
 extra DB storage (what can be solved with data migrations in a
 future version).
 
+I retrieve data from Clearbit in a background thread because it
+may be time consuming.
+
 ## API
 
 I use the same POST request params as model field names.
