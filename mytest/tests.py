@@ -72,7 +72,6 @@ class FullTestCase(TestCase):
         # Sign up users
         # TODO: This format of separate arrays is simple for humans, but is against some basic programming principles.
         passwords = []
-        user_ids = []
         for i in range(numbers['number_of_users']):
             username = "user{}".format(i)
             password = NetworkUser.objects.make_random_password()
@@ -80,7 +79,8 @@ class FullTestCase(TestCase):
             response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
-            user_ids.append(response.json()['data']['user_id'])
+            user_id = response.json()['data']['user_id']
+            print("Signed up user {} (ID {})".format(username, user_id))
 
         # Post posts
         user_posts = []
@@ -98,7 +98,9 @@ class FullTestCase(TestCase):
                                             {'title': title, 'text': text, 'link': "http://example.com"},
                                             HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
-                user_posts[i].append(response.json()['data']['post_id'])
+                post_id = response.json()['data']['post_id']
+                user_posts[i].append(post_id)
+                print("Signed up user {} (ID {})".format(passwords[i]['username'], post_id))
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
         # To ensure no user has reached max likes yet (not strictly necessary, but simplifies flow analysis):
@@ -136,10 +138,12 @@ class FullTestCase(TestCase):
                     break
 
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
+                post_id = posts_to_like_by_this_user[post_to_like]
                 response = self.client.post('/post/like',
-                                 {'post_id': posts_to_like_by_this_user[post_to_like]},
+                                 {'post_id': post_id},
                                  HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
+                print("User {} liked post number {} (ID {})".format(next_user_number, i, post_id))
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
