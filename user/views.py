@@ -31,6 +31,8 @@ class SignupView(MyAPIView):
         # may raise an exception
         values = [request.POST[field] for field in all_fields if field in request.POST]
         password = request.POST['password']
+        request.POST['username']
+        request.POST['email']
 
         # Convert to the right format:
         if 'birth_date' in values:
