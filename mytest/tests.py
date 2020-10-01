@@ -1,6 +1,7 @@
 import configparser
 import itertools
 import os
+import re
 from random import randrange
 
 import requests
@@ -19,10 +20,14 @@ class RealClient():
         self.server = server
 
     def get(self, path, params=None, **kwargs):
-        return requests.get(self.server + path, params, **kwargs)
+        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].starts_with('HTTP_')}
+        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].starts_with('HTTP_')}
+        return requests.get(self.server + path, params, headers=headers, **kwargs)
 
     def post(self, path, params=None, **kwargs):
-        return requests.post(self.server + path, params, **kwargs)
+        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].starts_with('HTTP_')}
+        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].starts_with('HTTP_')}
+        return requests.post(self.server + path, params, headers=headers, **kwargs)
 
 
 class FullTestCase(TestCase):
@@ -74,7 +79,7 @@ class FullTestCase(TestCase):
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
-            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json()['message']))
+            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
             user_ids.append(response.json()['data']['user_id'])
 
         # Post posts
@@ -92,7 +97,7 @@ class FullTestCase(TestCase):
                 response = self.client.post('/post/new',
                                             {'title': title, 'text': text, 'link': "http://example.com"},
                                             HTTP_AUTHORIZATION=auth_header)
-                self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json()['message']))
+                self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 user_posts[i].append(response.json()['data']['post_id'])
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
@@ -134,7 +139,7 @@ class FullTestCase(TestCase):
                 response = self.client.post('/post/like',
                                  {'post_id': posts_to_like_by_this_user[post_to_like]},
                                  HTTP_AUTHORIZATION=auth_header)
-                self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json()['message']))
+                self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
