@@ -31,6 +31,12 @@ debugging.
 Because it was said to use JWT but nothing about OAuth/OpenID Connect,
 I do it in an easy way using `django-rest-framework-jwt`.
 
+Should use `django-defender` against brute force password guessing,
+but it required Cron for proper functionality (otherwise it grows
+the DB too quick). I could create a
+Debian package or another kind of automatic installer, but I was
+not specified the exact operating system.
+
 ## Architecture decisions
 
 I use `django.contrib.auth.User` as the base of my User model,
