@@ -69,6 +69,11 @@ class FullTestCase(TestCase):
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
                          "Allowed to use the same username twice.")
 
+        response = self.client.post('/post/like', {'post_id': 1})
+        self.assertEqual(response.json(),
+                         {'code': 'AUT_01', 'message': 'The apikey is invalid.', 'field': 'API-KEY'},
+                         "Allowed to use API without API key.")
+
     def test_main(self):
         """The test described in the tech specification."""
         # seed(1)
