@@ -27,5 +27,5 @@ class UnlikeView(MyAPIView):
     """Repeated unlikes are ignored."""
     def post(self, request):
         post = Post.objects.get(pk=request.POST['post_id'])
-        post.likes.remove(request.user)  # FIXME: what on removing second time?
+        post.likes.remove(request.user)
         return Response({'code': "OK"})
