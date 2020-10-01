@@ -22,6 +22,7 @@ class LikeView(MyAPIView):
         post.likes.add(request.user)
         return Response({'code': "OK"})
 
+
 class UnlikeView(MyAPIView):
     """Repeated unlikes are ignored."""
     def post(self, request):
