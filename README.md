@@ -1,6 +1,23 @@
 # avatrade-job-test
 A test Python task
 
+## Running
+
+Settings are stored in `local_settings.py`:
+```python
+HUNTER_API_KEY = ...
+```
+
+You can also configure any Django-supported DB here if SQLite does
+not suffice.
+
+To run:
+```sh
+./manage.py migrate
+./manage.py runserver
+```
+or it can be run with uWSGI (see Django docs).
+
 ## Used packages
 
 I use djangorestframework as a powerful REST framework with easy
