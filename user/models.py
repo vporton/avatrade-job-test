@@ -43,8 +43,10 @@ class NetworkUser(AbstractUser):
         response = requests.get(url)
         if response.status_code != 200:
             raise Exception("Cannot connect to hunter.io for user email verification. Try again.")
-        # Consider no ['data']['result'] as an internal error and suffice with KeyNotFound exception as the error signal.
-        return response.json()['data']['result'] == 'deliverable'  # my understanding of "verifying email existence" in the technical task
+        try:
+            return response.json()['data']['result'] == 'deliverable'  # my understanding of "verifying email existence" in the technical task
+        except KeyError:
+            raise Exception("Cannot parse hunter.io response.")  # FIXME
 
     def fill_data_automatically(self):
         Thread(target=self.do_fill_data_automatically, args=()).start()
