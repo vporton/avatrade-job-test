@@ -6,7 +6,20 @@ from user.models import NetworkUser
 
 class Signup(APIView):
     def post(self, request):
-        all_fields = NetworkUser._meta.fields
+        all_fields = ['username',
+                      'first_name',
+                      'last_name',
+                      'email',
+                      'birth_date',  # FIXME: DateField
+                      'location''
+                      'city',
+                      'state',
+                      'country',
+                      'lat',  # FIXME: FloatField
+                      'lng',  # FIXME: FloatField
+                      'bio',
+                      'site',
+                      'avatar']
         user = NetworkUser(*(request.POST[field.name] for field in all_fields if field.name in request.POST))  # TODO: validate fields
         if not NetworkUser.validate_new_user_email(user.email):
             return Response({})  # FIXME

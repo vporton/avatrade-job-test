@@ -15,17 +15,26 @@ clearbit.Person.version = '2019-12-19'
 
 class NetworkUser(AbstractUser):
     # Don't rename fields. They are also HTTP params names.
+    # username
+    # first_name
+    # last_name
+    # email
+    # password
+    # is_staff
+    # is_active
+    # is_superuser
+    # last_login
+    # date_joined
     birth_date = models.DateField()
     location = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    state = models.CharField(max_length=100, blank=True)
-    country = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True)    # TODO: To improve performance should be a foreign key
+    state = models.CharField(max_length=100, blank=True)   # ditto
+    country = models.CharField(max_length=100, blank=True) # ditto
     lat = models.FloatField(default=float("NAN"))
     lng = models.FloatField(default=float("NAN"))
     bio = models.TextField(blank=True)
     site = models.URLField(blank=True)
     avatar = models.URLField(blank=True)
-
 
     @staticmethod
     def validate_new_user_email(email):
