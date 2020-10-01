@@ -28,7 +28,7 @@ class NetworkUser(AbstractUser):
     # is_superuser
     # last_login
     # date_joined
-    birth_date = models.DateField()
+    birth_date = models.DateField(null=True)
     location = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)    # TODO: To improve performance should be a foreign key
     state = models.CharField(max_length=100, blank=True)   # ditto
