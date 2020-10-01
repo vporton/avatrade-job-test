@@ -42,7 +42,7 @@ class UserInfoConsumer(WebsocketConsumer):
             UserInfoConsumer.consumers[self.user.pk].remove(self)
 
     @staticmethod
-    def notify_user_info_received(self, user_pk, success):
+    def notify_user_info_received(user_pk, success):
         if not user_pk in UserInfoConsumer.consumers:
             return
         for consumer in UserInfoConsumer.consumers[user_pk]:
