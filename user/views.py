@@ -1,10 +1,10 @@
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
+from core.misc import MyAPIView
 from user.models import NetworkUser
 
 
-class SignupView(APIView):
+class SignupView(MyAPIView):
     def post(self, request):
         all_fields = ['username',
                       'first_name',

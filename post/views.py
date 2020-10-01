@@ -1,14 +1,14 @@
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
+from core.misc import MyAPIView
 from post.models import Post
 
 
-class PostView(APIView):
+class PostView(MyAPIView):
     """It's a view about a social post, not about POST requests :-)"""
 
     def post(self, request):
-        # TODO: Error on a missing param
+        # TODO: Error of validation
         post = Post.objects.create(author=request.user,
                                    title=request.POST['title'],
                                    text=request.POST['text'],
@@ -16,14 +16,14 @@ class PostView(APIView):
         return Response({'post_id': post.pk})  # TODO
 
 
-class LikeView(APIView):
+class LikeView(MyAPIView):
     """Repeated likes are ignored. (TODO: correct behavior?)"""
     def post(self, request):
         post = Post.objects.get(pk=request.POST['post_id'])
         post.likes.add(request.user)
         return Response({})  # TODO
 
-class UnlikeView(APIView):
+class UnlikeView(MyAPIView):
     """Repeated unlikes are ignored. (TODO: correct behavior?)"""
     def post(self, request):
         post = Post.objects.get(pk=request.POST['post_id'])
