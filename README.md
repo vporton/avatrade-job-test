@@ -70,6 +70,11 @@ may be time consuming.
 Normal responses are passed in the field `data` to differentiate
 them from error info and other possible auxiliary information.
 
+For test config I use `.ini` format to be easily understandable
+and editable. The bot config is read from the file passed by
+`BOT_CONFIG` environment variable (or `mytest/data/config.ini` by
+default, see that file for an example bot config).
+
 ## API
 
 I use the same POST request params as model field names.

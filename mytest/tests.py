@@ -1,3 +1,4 @@
+import configparser
 import os
 
 import requests
@@ -27,6 +28,13 @@ class FullTestCase(TestCase):
         else:
             self.client = Client()
 
+    @staticmethod
+    def get_config():
+        config = configparser.ConfigParser()
+        config_file = os.environ.get('BOT_CONFIG', None) or 'mytest/data/config.ini'
+        config.read(config_file)
+        return config['numbers']
+
     def test_auth(self):
         self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
                          {'code': 'PAR_01', 'field': 'email', 'message': 'Missing HTTP param.'},
@@ -46,4 +54,4 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
-        pass
+        numbers = FullTestCase.get_config()
