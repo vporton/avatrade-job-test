@@ -110,8 +110,8 @@ class FullTestCase(TestCase):
             return
 
         # Do likes
-        eligible_users = [{'user_number': i, 'user_posts_number': len(user_posts[i])} for i in range(numbers['number_of_users'])]
-        eligible_users.sort(key=lambda p: p['user_posts_number'], reverse=True)  # TODO: sorted() instead for greater performance?
+        eligible_users_unsorted = ({'user_number': i, 'user_posts_number': len(user_posts[i])} for i in range(numbers['number_of_users']))
+        eligible_users = sorted(eligible_users_unsorted, key=lambda p: p['user_posts_number'], reverse=True)
 
         # Now all posts are with zero likes.
         users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
