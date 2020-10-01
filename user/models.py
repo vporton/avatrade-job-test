@@ -1,3 +1,5 @@
+import math
+from threading import Thread
 from urllib.parse import quote
 
 import clearbit as clearbit
@@ -24,9 +26,10 @@ class NetworkUser(AbstractUser):
     avatar = models.URLField(blank=True)
 
 
-    def validate_new_user(self):
+    @staticmethod
+    def validate_new_user_email(email):
         url_tmpl = 'https://api.hunter.io/v2/email-verifier?email={}&api_key={}'
-        url = url_tmpl.format(quote(self.email), quote(settings.HUNTER_API_KEY))
+        url = url_tmpl.format(quote(email), quote(settings.HUNTER_API_KEY))
         response = requests.get(url)
         if response.status_code != 200:
             raise Exception("Cannot connect to hunter.io for user email verification. Try again.")
@@ -34,25 +37,44 @@ class NetworkUser(AbstractUser):
         return response.json()['data']['result'] == 'deliverable'  # my understanding of "verifying email existence" in the technical task
 
     def fill_data_automatically(self):
-        person = clearbit.Person.find(email=self.email, stream=True)  # TODO: Run it in a separate thread.
-        # Don't handle errors in details, because error messages may probably contain private information
-        if person != None:
+        Thread(target=self.do_fill_data_automatically, args=()).start()
+
+    def do_fill_data_automatically(self):
+        person = clearbit.Person.find(email=self.email, stream=True)
+        # Don't handle errors in details, because error messages may probably contain private information.
+        if person == None:
+            return
+
+        # My interpretation of "additional information" in the tech specification:
+        if not self.first_name:
             self.first_name = person['name']['givenName']
+        if not self.last_name:
             self.last_name = person['name']['familyName']
-            # ignore person['name']['fullName']
+        # ignore person['name']['fullName']
+        if not self.location:
             self.location = person['location']
+        if not self.city:
             self.city = person['geo']['city']
+        if not self.state:
             self.state = person['geo']['state']
+        if not self.country:
             self.country = person['geo']['country']
+        if math.isnan(self.lat):
             self.lat = person['geo']['lat']
+        if math.isnan(self.lng):
             self.lng = person['geo']['lng']
+        if not self.bio:
             self.bio = person['bio']
-            # Handle exceptions be sure for the case if ClearBit's concept of URL is not the same as ours:
+        # Handle exceptions be sure for the case if ClearBit's concept of URL is not the same as ours:
+        if not self.site:
             try:
                 self.site = person['site']
             except ValidationError:
                 pass
+        if not self.avatar:
             try:
                 self.avatar = person['avatar']
             except ValidationError:
                 pass
+
+        self.save()
