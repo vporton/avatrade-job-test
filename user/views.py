@@ -33,10 +33,12 @@ class SignupView(MyAPIView):
         password = request.POST['password']
 
         # Convert to the right format:
-        year, month, day = values['birth_date'].split('-')  # raises ValueError if wrong quantity of numbers
-        values['birth_date'] = datetime.date(year, month, day)  # may raise ValueError
-        values['lat'] = float(values['lat'])
-        values['lng'] = float(values['lng'])
+        if 'birth_date' in values:
+            year, month, day = values['birth_date'].split('-')  # raises ValueError if wrong quantity of numbers
+            values['birth_date'] = datetime.date(year, month, day)  # may raise ValueError
+        if 'lat' in values and 'lng' in values:
+            values['lat'] = float(values['lat'])
+            values['lng'] = float(values['lng'])
 
         user = NetworkUser(*values)
 
