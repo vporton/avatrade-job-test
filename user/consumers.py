@@ -44,6 +44,7 @@ class UserInfoConsumer(WebsocketConsumer):
         if self.user:
             UserInfoConsumer.consumers[self.user.pk].remove(self)
 
+    @staticmethod
     def notify_user_info_received(self, user_pk, success):
         if not user_pk in UserInfoConsumer.consumers:
             return
