@@ -74,6 +74,7 @@ class FullTestCase(TestCase):
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
+            print(response.json())
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user.")
             user_ids.append(response.json()['data']['user_id'])
 

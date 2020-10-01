@@ -49,9 +49,13 @@ class MyAPIView(APIView):
             return MyErrorResponse({"code": "PAR_01",
                                     "message": "Missing HTTP param.",
                                     "field": exc.args[0]})
-        if isinstance(exc, IntegrityError) or isinstance(exc, ValueError):
+        if isinstance(exc, ValueError):
             return MyErrorResponse({"code": "USR_02",
-                                    "message": "Invalid data.",
+                                    "message": "Invalid data (value): {}".format(exc.args[0]),
+                                    "field": "NONE"})
+        if isinstance(exc, IntegrityError):
+            return MyErrorResponse({"code": "USR_02",
+                                    "message": "Invalid data (DB integrity check failed).",
                                     "field": "none"})
         if isinstance(exc, ObjectDoesNotExist):
             return MyErrorResponse({"code": "USR_01",
