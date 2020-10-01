@@ -33,7 +33,7 @@ class RealClient():
 class FullTestCase(TestCase):
     def setUp(self):
         if os.environ.get('REAL_SERVER', ''):
-            self.client = RealClient(settings.SERVER_URL)
+            self.client = RealClient(settings.PROXIED_SERVER_URL)
         else:
             self.client = Client()
 

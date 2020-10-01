@@ -139,6 +139,7 @@ ASGI_APPLICATION = "social.routing.application"
 AUTH_USER_MODEL = 'user.User'
 
 SERVER_URL = "http://127.0.0.1:8000"
+PROXIED_SERVER_URL = SERVER_URL
 
 # Used while debugging, to avoid spending my money (TODO: Set to False):
 SKIP_EXTERNAL_CALLS = True
