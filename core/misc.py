@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import IntegrityError
 from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
@@ -46,7 +47,7 @@ class MyAPIView(APIView):
             return MyErrorResponse({"code": "PAR_01",
                                     "message": "Missing HTTP param.",
                                     "field": exc.args[0]})
-        if isinstance(exc, ValidationError):  # FIXME: correct error for model validation
+        if isinstance(exc, IntegrityError):
             return MyErrorResponse({"code": "USR_02",
                                     "message": "Invalid data.",
                                     "field": "none"})  # TODO
