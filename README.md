@@ -14,6 +14,8 @@ not suffice.
 
 To run:
 ```sh
+virtualenv -p python3 venv
+source venv/bin/activate
 ./manage.py migrate
 ./manage.py runserver
 ```
