@@ -34,6 +34,11 @@ where only the second tries to connect to the actual server and
 make actual HTTP requests. (The first imitates HTTP protocol features
 without actually using it.)
 
+To run only the "automated bot" described in the specification:
+```sh
+./manage.py test mytest.tests.FullTestCase.test_main
+```
+
 ## Used packages
 
 I use `djangorestframework` as a powerful REST framework with easy
