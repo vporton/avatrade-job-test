@@ -74,7 +74,7 @@ class FullTestCase(TestCase):
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
-            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user.")
+            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json()['message']))
             user_ids.append(response.json()['data']['user_id'])
 
         # Post posts
@@ -92,7 +92,7 @@ class FullTestCase(TestCase):
                 response = self.client.post('/post/new',
                                             {'title': title, 'text': text, 'link': "http://example.com"},
                                             HTTP_AUTHORIZATION=auth_header)
-                self.assertEqual(response.json()['code'], 'OK', "Cannot post.")
+                self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json()['message']))
                 user_posts[i].append(response.json()['data']['post_id'])
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
@@ -131,9 +131,10 @@ class FullTestCase(TestCase):
                     break
 
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
-                self.client.post('/post/like',
+                response = self.client.post('/post/like',
                                  {'post_id': posts_to_like_by_this_user[post_to_like]},
                                  HTTP_AUTHORIZATION=auth_header)
+                self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json()['message']))
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
