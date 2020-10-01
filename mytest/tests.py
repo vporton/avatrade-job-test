@@ -69,17 +69,17 @@ class FullTestCase(TestCase):
         passwords = []
         user_ids = []
         for i in range(numbers['number_of_users']):
-            passwords[i] = NetworkUser.objects.make_random_password()
+            passwords.append(NetworkUser.objects.make_random_password())
             response = self.client.post('/user/signup',
                                         {'username': "user{}".format(i), 'password': passwords[i],
                                          'email': 'porton@narod.ru'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user.")
-            user_ids[i] = response.json()['data']['user_id']
+            user_ids.append(response.json()['data']['user_id'])
 
         # Post posts
         user_posts = []
         for i in range(numbers['number_of_users']):
-            user_posts[i] = []
+            user_posts.append([])
             for j in range(int(random(numbers['max_posts_per_user'] + 1))):
                 title = "Title{} (user {})".format(j, i)
                 text = "Text{} (user {})".format(j, i)
