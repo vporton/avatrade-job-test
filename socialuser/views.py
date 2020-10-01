@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from core.misc import MyAPIView, MyErrorResponse
+from socialuser.consumers import fill_user_data_automatically
 from socialuser.models import User
 
 
@@ -75,4 +76,4 @@ class SignupView(MyAPIView):
 
 class RetrieveUserDataView(MyAPIView):
     def post(self, request):
-        request.user.fill_data_automatically()  # Will run in background in a separate thread
+        fill_user_data_automatically(request.user)  # Will run in background in a separate thread

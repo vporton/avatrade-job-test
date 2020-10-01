@@ -1,6 +1,4 @@
-import math
 from json.decoder import JSONDecodeError
-from threading import Thread
 from urllib.parse import quote
 
 import clearbit as clearbit
@@ -8,10 +6,8 @@ import requests
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from rest_framework.exceptions import ValidationError
 
 from core.misc import MyErrorResponse
-# from socialuser.consumers import UserInfoConsumer
 
 clearbit.key = settings.CLEARBIT_API_SECRET
 clearbit.Person.version = '2019-12-19'
@@ -61,51 +57,3 @@ class User(AbstractUser):
             return MyErrorResponse({"code": "EXT_01",
                                     "message": "Cannot parse hunter.io response.",
                                     "field": "NONE"})
-
-    def fill_data_automatically(self):
-        Thread(target=self.do_fill_data_automatically, args=()).start()
-
-    def do_fill_data_automatically(self):
-        if settings.SKIP_EXTERNAL_CALLS:
-            return
-
-        person = clearbit.Person.find(email=self.email, stream=True)
-        # Don't handle errors in details, because error messages may probably contain private information.
-        if person == None:
-            # UserInfoConsumer.notify_user_info_received(self.pk, success=False)
-            return
-
-        # My interpretation of "additional information" in the tech specification:
-        if not self.first_name:
-            self.first_name = person['name']['givenName']
-        if not self.last_name:
-            self.last_name = person['name']['familyName']
-        # ignore person['name']['fullName']
-        if not self.location:
-            self.location = person['location']
-        if not self.city:
-            self.city = person['geo']['city']
-        if not self.state:
-            self.state = person['geo']['state']
-        if not self.country:
-            self.country = person['geo']['country']
-        if self.lat is None:
-            self.lat = person['geo']['lat']
-        if self.lng is None:
-            self.lng = person['geo']['lng']
-        if not self.bio:
-            self.bio = person['bio']
-        # Handle exceptions be sure for the case if ClearBit's concept of URL is not the same as ours:
-        if not self.site:
-            try:
-                self.site = person['site']
-            except ValidationError:
-                pass
-        if not self.avatar:
-            try:
-                self.avatar = person['avatar']
-            except ValidationError:
-                pass
-
-        self.save()
-        # UserInfoConsumer.notify_user_info_received(self.pk, success=True)

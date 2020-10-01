@@ -1,6 +1,9 @@
 import re
+from threading import Thread
 
+import clearbit
 from channels.generic.websocket import WebsocketConsumer
+from django.conf import settings
 from rest_framework.exceptions import ValidationError
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 
@@ -47,3 +50,53 @@ class UserInfoConsumer(WebsocketConsumer):
             return
         for consumer in UserInfoConsumer.consumers[user_pk]:
             consumer.send("notice: socialuser data received" if success else "error: cannot receive socialuser data")
+
+
+def fill_user_data_automatically(user):
+    Thread(target=user.do_fill_user_data_automatically, args=()).start()
+
+
+def do_fill_user_data_automatically(user):
+    if settings.SKIP_EXTERNAL_CALLS:
+        return
+
+    person = clearbit.Person.find(email=user.email, stream=True)
+    # Don't handle errors in details, because error messages may probably contain private information.
+    if person == None:
+        UserInfoConsumer.notify_user_info_received(user.pk, success=False)
+        return
+
+    # My interpretation of "additional information" in the tech specification:
+    if not user.first_name:
+        user.first_name = person['name']['givenName']
+    if not user.last_name:
+        user.last_name = person['name']['familyName']
+    # ignore person['name']['fullName']
+    if not user.location:
+        user.location = person['location']
+    if not user.city:
+        user.city = person['geo']['city']
+    if not user.state:
+        user.state = person['geo']['state']
+    if not user.country:
+        user.country = person['geo']['country']
+    if user.lat is None:
+        user.lat = person['geo']['lat']
+    if user.lng is None:
+        user.lng = person['geo']['lng']
+    if not user.bio:
+        user.bio = person['bio']
+    # Handle exceptions be sure for the case if ClearBit's concept of URL is not the same as ours:
+    if not user.site:
+        try:
+            user.site = person['site']
+        except ValidationError:
+            pass
+    if not user.avatar:
+        try:
+            user.avatar = person['avatar']
+        except ValidationError:
+            pass
+
+    user.save()
+    UserInfoConsumer.notify_user_info_received(user.pk, success=True)

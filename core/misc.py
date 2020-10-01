@@ -30,7 +30,7 @@ class MyErrorResponse(Response):
 
 class MyAPIView(APIView):
     # This code would probably be correct for View but does not work for APIView
-    # def dispatch(self, request, *args, **kwargs):
+    # def dispatch(user, request, *args, **kwargs):
     #     try:
     #         response = super().dispatch(request, *args, **kwargs)
     #     except MultiValueDictKeyError as e:
