@@ -59,7 +59,15 @@ class FullTestCase(TestCase):
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
-        # TODO: Test signing up with the same username or the same email.
+        # Test signing up twice with the same username:
+        response = self.client.post('/user/signup',
+                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
+        self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
+        response = self.client.post('/user/signup',
+                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
+        self.assertEqual(response.json(),
+                         {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
+                         "Allowed to use the same username twice.")
 
     def test_main(self):
         """The test described in the tech specification."""

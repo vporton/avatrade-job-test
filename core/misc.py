@@ -14,13 +14,16 @@ class MyErrorResponse(Response):
         # USR_02 invalid data
         # USR_03 email does not verify
         # USR_04 invalid password
+        # USR_05 username already exists
         # AUT_01 not authorized
         # PAR_01 parameter is missing
         # EXT_01 external service failure
+        # OFF_01 try again
         status = {
             'USR': 400,
             'AUT': 401,
             'PAR': 404,
+            'OFF': 503
         }.get(data['code'][:3])
         super().__init__(data, status, template_name, headers, exception, content_type)
 

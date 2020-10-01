@@ -1,7 +1,9 @@
 from datetime import datetime
+from sqlite3 import DatabaseError
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
@@ -56,7 +58,17 @@ class SignupView(MyAPIView):
         if email_verificiation_result is not None:
             return email_verificiation_result
 
-        user.save()
+        try:
+            with transaction.atomic():
+                if User.objects.filter(username=user.username):
+                    return MyErrorResponse({"code": "USR_05",
+                                            "message": "User with this username already exists.",
+                                            "field": "username"})
+                user.save()
+        except DatabaseError:
+            return MyErrorResponse({"code": "OFF_01",
+                                    "message": "Server overloaded, try again.",
+                                    "field": "NONE"})
 
         user.fill_data_automatically()  # Will run in background in a separate thread
 
