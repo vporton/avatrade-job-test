@@ -6,6 +6,7 @@ A test Python task
 Settings are stored in `local_settings.py`:
 ```python
 HUNTER_API_KEY = ...
+CLEARBIT_API_SECRET = ...
 ```
 
 You can also configure any Django-supported DB here if SQLite does
@@ -20,8 +21,10 @@ or it can be run with uWSGI (see Django docs).
 
 ## Used packages
 
-I use djangorestframework as a powerful REST framework with easy
+I use `djangorestframework` as a powerful REST framework with easy
 debugging.
+
+`requests` for making HTTP(S) requests to external servers.
 
 ## Architecture decisions
 
