@@ -11,7 +11,7 @@ class SignupView(MyAPIView):
                       'last_name',
                       'email',
                       'birth_date',  # FIXME: DateField
-                      'location''
+                      'location',
                       'city',
                       'state',
                       'country',
