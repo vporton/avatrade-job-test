@@ -60,4 +60,4 @@ class SignupView(MyAPIView):
 
         user.fill_data_automatically()  # Will run in background in a separate thread
 
-        return Response({'code': "OK"})
+        return Response({'code': "OK", 'data': {'user_id': user.pk}})

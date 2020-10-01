@@ -137,6 +137,9 @@ AUTH_USER_MODEL = 'user.NetworkUser'
 
 SERVER_URL = "http://127.0.0.1:8000"
 
+# Used while debugging, to avoid spending my money (TODO: Set to False):
+SKIP_EXTERNAL_CALLS = True
+
 try:
     from local_settings import *
 except ImportError:

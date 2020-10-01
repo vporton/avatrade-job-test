@@ -41,6 +41,9 @@ class NetworkUser(AbstractUser):
 
     @staticmethod
     def verify_new_user_email(email):
+        if settings.SKIP_EXTERNAL_CALLS:
+            return
+
         url_tmpl = 'https://api.hunter.io/v2/email-verifier?email={}&api_key={}'
         url = url_tmpl.format(quote(email), quote(settings.HUNTER_API_KEY))
         response = requests.get(url)
@@ -62,6 +65,9 @@ class NetworkUser(AbstractUser):
         Thread(target=self.do_fill_data_automatically, args=()).start()
 
     def do_fill_data_automatically(self):
+        if settings.SKIP_EXTERNAL_CALLS:
+            return
+
         person = clearbit.Person.find(email=self.email, stream=True)
         # Don't handle errors in details, because error messages may probably contain private information.
         if person == None:
