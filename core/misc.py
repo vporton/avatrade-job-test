@@ -52,9 +52,9 @@ class MyAPIView(APIView):
         if isinstance(exc, IntegrityError) or isinstance(exc, ValueError):
             return MyErrorResponse({"code": "USR_02",
                                     "message": "Invalid data.",
-                                    "field": "none"})  # TODO
+                                    "field": "none"})
         if isinstance(exc, ObjectDoesNotExist):
             return MyErrorResponse({"code": "USR_01",
                                     "message": "Object not found.",
-                                    "field": "none"})
+                                    "field": "NONE"})
         return super().handle_exception(exc)
