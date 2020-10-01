@@ -69,16 +69,21 @@ class FullTestCase(TestCase):
         passwords = []
         user_ids = []
         for i in range(numbers['number_of_users']):
-            passwords.append(NetworkUser.objects.make_random_password())
+            username = "user{}".format(i)
+            password = NetworkUser.objects.make_random_password()
+            passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/signup',
-                                        {'username': "user{}".format(i), 'password': passwords[i],
-                                         'email': 'porton@narod.ru'})
+                                        {'username': username, 'password': password, 'email': 'porton@narod.ru'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user.")
             user_ids.append(response.json()['data']['user_id'])
 
         # Post posts
         user_posts = []
         for i in range(numbers['number_of_users']):
+            # See https://jpadilla.github.io/django-rest-framework-jwt/
+            print(self.client.post('/api-token-auth/', passwords[i]))
+            # "Authorization: JWT <your_token>"
+
             user_posts.append([])
             for j in range(int(random(numbers['max_posts_per_user'] + 1))):
                 title = "Title{} (user {})".format(j, i)
