@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from user.models import NetworkUser
 
 
-class Signup(APIView):
+class SignupView(APIView):
     def post(self, request):
         all_fields = ['username',
                       'first_name',
