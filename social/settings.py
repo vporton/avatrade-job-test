@@ -135,6 +135,8 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'user.NetworkUser'
 
+SERVER_URL = "http://127.0.0.1:8000"
+
 try:
     from local_settings import *
 except ImportError:

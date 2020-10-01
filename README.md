@@ -22,6 +22,18 @@ source venv/bin/activate
 ```
 or it can be run with uWSGI (see Django docs).
 
+Testing is accomplished by
+```sh
+./manage.py test
+```
+or
+```sh
+REAL_SERVER=1 ./manage.py test
+```
+where only the second tries to connect to the actual server and
+make actual HTTP requests. (The first imitates HTTP protocol features
+without actually using it.)
+
 ## Used packages
 
 I use `djangorestframework` as a powerful REST framework with easy
