@@ -1,9 +1,6 @@
 import re
 
-import requests
 from channels.generic.websocket import WebsocketConsumer
-from django.conf import settings
-from django.urls import reverse
 from rest_framework.exceptions import ValidationError
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 
