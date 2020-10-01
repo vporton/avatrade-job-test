@@ -36,7 +36,7 @@ class FullTestCase(TestCase):
         config = configparser.ConfigParser()
         config_file = os.environ.get('BOT_CONFIG', None) or 'mytest/data/config.ini'
         config.read(config_file)
-        return config['numbers']
+        return {p[0]: int(p[1]) for p in dict(config['numbers']).items()}  # Convert config['numbers'] to numbers.
 
     def test_auth(self):
         self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
