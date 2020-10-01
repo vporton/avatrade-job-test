@@ -2,3 +2,5 @@
 
 * "Invalid data (DB integrity check failed): UNIQUE constraint failed: user_networkuser.username"
   is a bad error message.
+
+* Document API.
