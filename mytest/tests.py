@@ -108,12 +108,15 @@ class FullTestCase(TestCase):
             return
 
         # Do likes
-        eligible_users = [{'user_number': i, 'user_posts_number': len(user_posts[i])}]
-        eligible_users.sort(key=lambda p: p['user_posts_number'])
-        users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])}]  # Now all posts are with zero likes.
-        while eligible_users:
+        eligible_users = [{'user_number': i, 'user_posts_number': len(user_posts[i])} for i in range(numbers['number_of_users'])]
+        eligible_users.sort(key=lambda p: p['user_posts_number'], reverse=True)  # TODO: sorted() instead for greater performance?
+
+        # Now all posts are with zero likes.
+        users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
+
+        for eligible_user in eligible_users:
             # "next user to perform a like is the user who has most posts and has not reached max likes"
-            next_user_number = eligible_users.pop()['user_number']
+            next_user_number = eligible_user['user_number']
 
             # See https://jpadilla.github.io/django-rest-framework-jwt/
             auth_token = self.client.post('/api-token-auth/', passwords[next_user_number]).json()['token']
