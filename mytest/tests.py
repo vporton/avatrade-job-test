@@ -103,10 +103,10 @@ class FullTestCase(TestCase):
             for j in range(int(randrange(numbers['max_posts_per_user'] + 1))):
                 title = "Title{} (user {})".format(j, i)
                 text = "Text{} (user {})".format(j, i)
-                # TODO: Test posts with no link.
-                response = self.client.post('/post/new',
-                                            {'title': title, 'text': text, 'link': "http://example.com"},
-                                            HTTP_AUTHORIZATION=auth_header)
+                post_data = {'title': title, 'text': text}
+                if randrange(1) != 0:
+                    post_data['link'] = "http://example.com"
+                response = self.client.post('/post/new', post_data, HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 post_id = response.json()['data']['post_id']
                 user_posts[i].append(post_id)
