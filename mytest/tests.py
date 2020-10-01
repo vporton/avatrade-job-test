@@ -80,7 +80,6 @@ class FullTestCase(TestCase):
             return
 
         # Sign up users
-        # TODO: This format of separate arrays is simple for humans, but is against some basic programming principles.
         passwords = []
         for i in range(numbers['number_of_users']):
             username = "user{}".format(i)
