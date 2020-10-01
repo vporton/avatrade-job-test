@@ -55,7 +55,7 @@ class MyAPIView(APIView):
                                     "field": "NONE"})
         if isinstance(exc, IntegrityError):
             return MyErrorResponse({"code": "USR_02",
-                                    "message": "Invalid data (DB integrity check failed).",
+                                    "message": "Invalid data (DB integrity check failed): {}".format(exc.args[0]),
                                     "field": "none"})
         if isinstance(exc, ObjectDoesNotExist):
             return MyErrorResponse({"code": "USR_01",
