@@ -20,13 +20,13 @@ class RealClient():
         self.server = server
 
     def get(self, path, params=None, **kwargs):
-        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].starts_with('HTTP_')}
-        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].starts_with('HTTP_')}
+        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].startswith('HTTP_')}
+        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].startswith('HTTP_')}
         return requests.get(self.server + path, params, headers=headers, **kwargs)
 
     def post(self, path, params=None, **kwargs):
-        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].starts_with('HTTP_')}
-        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].starts_with('HTTP_')}
+        headers = {re.sub(r'^HTTP_', '', p[0]): p[1] for p in kwargs.items() if p[0].startswith('HTTP_')}
+        kwargs = {p[0]: p[1] for p in kwargs.items() if not p[0].startswith('HTTP_')}
         return requests.post(self.server + path, params, headers=headers, **kwargs)
 
 
