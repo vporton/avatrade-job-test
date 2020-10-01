@@ -71,9 +71,9 @@ class NetworkUser(AbstractUser):
             self.state = person['geo']['state']
         if not self.country:
             self.country = person['geo']['country']
-        if math.isnan(self.lat):
+        if self.lat is None:
             self.lat = person['geo']['lat']
-        if math.isnan(self.lng):
+        if self.lng is None:
             self.lng = person['geo']['lng']
         if not self.bio:
             self.bio = person['bio']
