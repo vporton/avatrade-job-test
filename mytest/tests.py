@@ -18,11 +18,11 @@ class RealClient():
     def __init__(self, server):
         self.server = server
 
-    def get(self, path, params=None):
-        return requests.get(self.server + path, params)
+    def get(self, path, params=None, **kwargs):
+        return requests.get(self.server + path, params, **kwargs)
 
-    def post(self, path, params=None):
-        return requests.post(self.server + path, params)
+    def post(self, path, params=None, **kwargs):
+        return requests.post(self.server + path, params, **kwargs)
 
 
 class FullTestCase(TestCase):
