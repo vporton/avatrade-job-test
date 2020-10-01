@@ -63,6 +63,8 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
+        # seed(1)
+
         numbers = FullTestCase.get_config()
 
         if numbers['number_of_users'] == 1 and numbers['max_likes_per_user'] != 0:
@@ -129,6 +131,8 @@ class FullTestCase(TestCase):
 
             # "user performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
+                # print(' '.join(["user={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
+                #                 for h in users_with_eligible_posts]))
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
                     break
 
