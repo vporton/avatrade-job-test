@@ -7,4 +7,5 @@ class Post(models.Model):
     edited = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
     text = models.TextField()
+    link = models.URLField(null=True)
     likes = models.ManyToManyField('user.NetworkUser', related_name='liked_posts')
