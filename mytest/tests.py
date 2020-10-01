@@ -6,7 +6,9 @@ class FullTestCase(TestCase):
         self.client = Client()
 
     def test_auth(self):
-        print(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json())
+        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
+                         {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
+                         "Weak password not detected.")
 
     def test_main(self):
         """The test described in the tech specification."""

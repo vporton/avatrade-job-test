@@ -42,9 +42,8 @@ class SignupView(MyAPIView):
 
         user = NetworkUser(*values)
 
-        # TODO: Does set_password already do this validation?
         try:
-            validate_password(password, user)  # FIXME: Which validators are used?
+            validate_password(password, user)
         except ValidationError:
             return MyErrorResponse({"code": "USR_04",
                                     "message": "Password too weak.",
