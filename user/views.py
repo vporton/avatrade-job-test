@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework.response import Response
 
 from core.misc import MyAPIView, MyErrorResponse
@@ -10,17 +12,25 @@ class SignupView(MyAPIView):
                       'first_name',
                       'last_name',
                       'email',
-                      'birth_date',  # FIXME: DateField
+                      'birth_date',
                       'location',
                       'city',
                       'state',
                       'country',
-                      'lat',  # FIXME: FloatField
-                      'lng',  # FIXME: FloatField
+                      'lat',
+                      'lng',
                       'bio',
                       'site',
                       'avatar']
-        user = NetworkUser(*(request.POST[field.name] for field in all_fields if field.name in request.POST))  # TODO: validate fields
+        values = [request.POST[field.name] for field in all_fields if field.name in request.POST]
+
+        # Convert to the right format:
+        year, month, day = values['birth_date'].split('-')  # raises ValueError if wrong quantity of numbers
+        values['birth_date'] = datetime.date(year, month, day)  # may raise ValueError
+        values['lat'] = float(values['lat'])
+        values['lng'] = float(values['lng'])
+
+        user = NetworkUser(*values)
         if not NetworkUser.validate_new_user_email(user.email):  # TODO: Rename this function.
             return MyErrorResponse({"code": "USR_03",
                                     "message": "Email does not verify.",
