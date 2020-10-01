@@ -46,9 +46,9 @@ class SignupView(MyAPIView):
                                     "field": "password"})
         user.set_password(password)
 
-        email_validation_result = NetworkUser.validate_new_user_email(user.email)  # TODO: Rename this function.
-        if email_validation_result is not None:
-            return email_validation_result
+        email_verificiation_result = NetworkUser.verify_new_user_email(user.email)
+        if email_verificiation_result is not None:
+            return email_verificiation_result
 
         user.save()
 

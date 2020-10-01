@@ -40,7 +40,7 @@ class NetworkUser(AbstractUser):
     avatar = models.URLField(blank=True)
 
     @staticmethod
-    def validate_new_user_email(email):
+    def verify_new_user_email(email):
         url_tmpl = 'https://api.hunter.io/v2/email-verifier?email={}&api_key={}'
         url = url_tmpl.format(quote(email), quote(settings.HUNTER_API_KEY))
         response = requests.get(url)
