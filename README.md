@@ -49,3 +49,8 @@ them from error info and other possible auxiliary information.
 ## API
 
 I use the same POST request params as model field names.
+
+Repeated (un)likes are ignored, because:
+
+- It was not required to detect them in the tech specification.
+- Detecting them requires additional DB queries.

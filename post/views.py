@@ -16,14 +16,14 @@ class PostView(MyAPIView):
 
 
 class LikeView(MyAPIView):
-    """Repeated likes are ignored. (TODO: correct behavior?)"""
+    """Repeated likes are ignored."""
     def post(self, request):
         post = Post.objects.get(pk=request.POST['post_id'])
         post.likes.add(request.user)
         return Response({'code': "OK"})
 
 class UnlikeView(MyAPIView):
-    """Repeated unlikes are ignored. (TODO: correct behavior?)"""
+    """Repeated unlikes are ignored."""
     def post(self, request):
         post = Post.objects.get(pk=request.POST['post_id'])
         post.likes.remove(request.user)  # FIXME: what on removing second time?
