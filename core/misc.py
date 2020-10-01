@@ -44,8 +44,8 @@ class MyAPIView(APIView):
     def handle_exception(self, exc):
         if isinstance(exc, NotAuthenticated):
             return MyErrorResponse({"code": "AUT_01",
-                                    "message": "The apikey is invalid.",
-                                    "field": "API-KEY"})
+                                    "message": "The auth token is invalid.",
+                                    "field": "TOKEN"})
         if isinstance(exc, MultiValueDictKeyError):
             # It is an unwise assumption that this is necessarily a missing HTTP param,
             # but rewriting it in other way would be time consuming (and maybe even more error prone).

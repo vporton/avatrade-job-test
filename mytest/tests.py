@@ -72,7 +72,7 @@ class FullTestCase(TestCase):
         response = self.client.post('/post/like', {'post_id': 1})
         self.assertEqual(response.json(),
                          {'code': 'AUT_01', 'message': 'The apikey is invalid.', 'field': 'API-KEY'},
-                         "Allowed to use API without API key.")
+                         "Allowed to use API without auth token.")
 
     def test_main(self):
         """The test described in the tech specification."""
