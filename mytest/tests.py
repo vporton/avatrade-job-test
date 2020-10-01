@@ -1,7 +1,7 @@
 import configparser
 import itertools
 import os
-from random import random
+from random import randrange
 
 import requests
 from django.conf import settings
@@ -85,7 +85,7 @@ class FullTestCase(TestCase):
             # "Authorization: JWT <your_token>"
 
             user_posts.append([])
-            for j in range(int(random(numbers['max_posts_per_user'] + 1))):
+            for j in range(int(randrange(numbers['max_posts_per_user'] + 1))):
                 title = "Title{} (user {})".format(j, i)
                 text = "Text{} (user {})".format(j, i)
                 # TODO: Test posts with no link.
@@ -116,11 +116,11 @@ class FullTestCase(TestCase):
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
                     break
 
-                # "user can ... like random posts from users who have at least one post with 0 likes":
-                user_with_eligible_posts_index = int(random(len(users_with_eligible_posts)))
+                # "user can ... like randrange posts from users who have at least one post with 0 likes":
+                user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
-                post_to_like = int(random(len(posts_to_like_by_this_user)))
+                post_to_like = int(randrange(len(posts_to_like_by_this_user)))
                 self.client.post('/post/like', {'post_id': posts_to_like_by_this_user[post_to_like]})
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
