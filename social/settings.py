@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'core',
-    'user',
+    'socialuser',
     'post',
     'mytest',
 ]
@@ -136,7 +136,7 @@ STATIC_URL = '/static/'
 
 ASGI_APPLICATION = "social.routing.application"
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'socialuser.User'
 
 SERVER_URL = "http://127.0.0.1:8000"
 PROXIED_SERVER_URL = SERVER_URL

@@ -25,8 +25,8 @@ class UserInfoConsumer(WebsocketConsumer):
         except ValidationError:
             self.send(text_data="error: cannot authenticate")
         else:
-            self.remove_self()  # possibly switch to different user
-            self.user = user_info['user']
+            self.remove_self()  # possibly switch to different socialuser
+            self.user = user_info['socialuser']
             if not self.user.pk in UserInfoConsumer.consumers:
                 UserInfoConsumer.consumers[self.user.pk] = {}
             UserInfoConsumer.consumers[self.user.pk].add(self)
@@ -46,4 +46,4 @@ class UserInfoConsumer(WebsocketConsumer):
         if not user_pk in UserInfoConsumer.consumers:
             return
         for consumer in UserInfoConsumer.consumers[user_pk]:
-            consumer.send("notice: user data received" if success else "error: cannot receive user data")
+            consumer.send("notice: socialuser data received" if success else "error: cannot receive socialuser data")

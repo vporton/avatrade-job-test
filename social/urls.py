@@ -20,7 +20,7 @@ from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^api-token-auth/', obtain_jwt_token, name='obtain_jwt_token'),
-    re_path(r'^api-token-verify/', verify_jwt_token, name='verify_jwt_token'),  # use in user/consumers.py
-    path('user/', include('user.urls')),
+    re_path(r'^api-token-verify/', verify_jwt_token, name='verify_jwt_token'),  # use in socialuser/consumers.py
+    path('socialuser/', include('socialuser.urls')),
     path('post/', include('post.urls')),
 ]

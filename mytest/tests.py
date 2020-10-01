@@ -8,7 +8,7 @@ import requests
 from django.conf import settings
 from django.test import TestCase, Client
 
-from user.models import User
+from socialuser.models import User
 
 
 class RealClient():
@@ -45,25 +45,25 @@ class FullTestCase(TestCase):
         return {p[0]: int(p[1]) for p in dict(config['numbers']).items()}  # Convert config['numbers'] to numbers.
 
     def test_auth(self):
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
+        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'password': 'xx'}).json(),
                          {'code': 'PAR_01', 'field': 'email', 'message': 'Missing HTTP param.'},
                          "Missing email not detected.")
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'password', 'message': 'Missing HTTP param.'},
                          "Missing password not detected.")
-        self.assertEqual(self.client.post('/user/signup', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/socialuser/signup', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'username', 'message': 'Missing HTTP param.'},
                          "Missing username not detected.")
 
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
         # Test signing up twice with the same username:
-        response = self.client.post('/user/signup',
+        response = self.client.post('/socialuser/signup',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
-        self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
-        response = self.client.post('/user/signup',
+        self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
+        response = self.client.post('/socialuser/signup',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
         self.assertEqual(response.json(),
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
@@ -74,6 +74,12 @@ class FullTestCase(TestCase):
                          {'code': 'AUT_01', 'message': 'The auth token is invalid.', 'field': 'TOKEN'},
                          "Allowed to use API without auth token.")
 
+    def test_data_retrieval(self):
+        response = self.client.post('/socialuser/signup',
+                                    {'username': 'porton', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
+        print(response.json())
+        self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
+
     def test_main(self):
         """The test described in the tech specification."""
         # seed(1)
@@ -81,20 +87,20 @@ class FullTestCase(TestCase):
         numbers = FullTestCase.get_config()
 
         if numbers['number_of_users'] == 1 and numbers['max_likes_per_user'] != 0:
-            print("Contradictory config: Only one user, he cannot like himself.")
+            print("Contradictory config: Only one socialuser, he cannot like himself.")
             return
 
         # Sign up users
         passwords = []
         for i in range(numbers['number_of_users']):
-            username = "user{}".format(i)
+            username = "socialuser{}".format(i)
             password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
-            response = self.client.post('/user/signup',
+            response = self.client.post('/socialuser/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
-            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
+            self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
             user_id = response.json()['data']['user_id']
-            print("Signed up user {} (ID {})".format(username, user_id))
+            print("Signed up socialuser {} (ID {})".format(username, user_id))
 
         # Post posts
         user_posts = []
@@ -105,8 +111,8 @@ class FullTestCase(TestCase):
 
             user_posts.append([])
             for j in range(int(randrange(numbers['max_posts_per_user'] + 1))):
-                title = "Title{} (user {})".format(j, i)
-                text = "Text{} (user {})".format(j, i)
+                title = "Title{} (socialuser {})".format(j, i)
+                text = "Text{} (socialuser {})".format(j, i)
                 post_data = {'title': title, 'text': text}
                 if randrange(1) != 0:
                     post_data['link'] = "http://example.com"
@@ -114,10 +120,10 @@ class FullTestCase(TestCase):
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 post_id = response.json()['data']['post_id']
                 user_posts[i].append(post_id)
-                print("Posted by user {} (post_id {})".format(passwords[i]['username'], post_id))
+                print("Posted by socialuser {} (post_id {})".format(passwords[i]['username'], post_id))
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
-        # To ensure no user has reached max likes yet (not strictly necessary, but simplifies flow analysis):
+        # To ensure no socialuser has reached max likes yet (not strictly necessary, but simplifies flow analysis):
         if numbers['max_likes_per_user'] == 0:
             return
 
@@ -129,7 +135,7 @@ class FullTestCase(TestCase):
         users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
 
         for eligible_user in eligible_users:
-            # "next user to perform a like is the user who has most posts and has not reached max likes"
+            # "next socialuser to perform a like is the socialuser who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
 
             # See https://jpadilla.github.io/django-rest-framework-jwt/
@@ -141,19 +147,19 @@ class FullTestCase(TestCase):
 
             posts_to_like_by_this_user = list(itertools.chain(*posts_to_like_by_this_user_grouped_by_author))  # flatten array
 
-            # "user performs “like” activity until he reaches max likes"
+            # "socialuser performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
-                # print(' '.join(["user={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
+                # print(' '.join(["socialuser={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
                 #                 for h in users_with_eligible_posts]))
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
                     break
 
-                # "user can ... like randrange posts from users who have at least one post with 0 likes":
+                # "socialuser can ... like randrange posts from users who have at least one post with 0 likes":
                 user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
                 if not posts_to_like_by_this_user:
-                    # The tech specification does not tell what to do in this case. Let's stop for this user:
+                    # The tech specification does not tell what to do in this case. Let's stop for this socialuser:
                     break
 
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
@@ -163,7 +169,7 @@ class FullTestCase(TestCase):
                                  HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
                 print("User {} liked post_id {}".format(next_user_number, post_id))
-                posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
+                posts_to_like_by_this_user.pop(post_to_like)  # "one socialuser can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
                 if user_with_eligible_posts_info['posts_with_zero_likes'] == 0:
