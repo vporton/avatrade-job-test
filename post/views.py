@@ -11,7 +11,7 @@ class PostView(MyAPIView):
         post = Post.objects.create(author=request.user,
                                    title=request.POST['title'],
                                    text=request.POST['text'],
-                                   link=request.POST['link'] if 'link' in request.POST['text'] else None)
+                                   link=request.POST['link'] if 'link' in request.POST else None)
         return Response({'code': "OK", 'data': {'post_id': post.pk}})
 
 
