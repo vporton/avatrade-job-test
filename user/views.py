@@ -70,6 +70,9 @@ class SignupView(MyAPIView):
                                     "message": "Server overloaded, try again.",
                                     "field": "NONE"})
 
-        user.fill_data_automatically()  # Will run in background in a separate thread
-
         return Response({'code': "OK", 'data': {'user_id': user.pk}})
+
+
+class RetrieveUserDataView(MyAPIView):
+    def post(self, request):
+        request.user.fill_data_automatically()  # Will run in background in a separate thread

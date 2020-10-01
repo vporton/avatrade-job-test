@@ -11,6 +11,7 @@ from django.contrib.auth.models import AbstractUser
 from rest_framework.exceptions import ValidationError
 
 from core.misc import MyErrorResponse
+from user.consumers import UserInfoConsumer
 
 clearbit.key = settings.CLEARBIT_API_SECRET
 clearbit.Person.version = '2019-12-19'
@@ -71,6 +72,7 @@ class User(AbstractUser):
         person = clearbit.Person.find(email=self.email, stream=True)
         # Don't handle errors in details, because error messages may probably contain private information.
         if person == None:
+            UserInfoConsumer.notify_user_info_received(self.pk, success=False)
             return
 
         # My interpretation of "additional information" in the tech specification:
@@ -106,3 +108,4 @@ class User(AbstractUser):
                 pass
 
         self.save()
+        UserInfoConsumer.notify_user_info_received(self.pk, success=True)
