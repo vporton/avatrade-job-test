@@ -161,8 +161,8 @@ class FullTestCase(TestCase):
                 #     # The tech specification does not tell what to do in this case. Let's stop for this user:
                 #     break
 
-                user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]  # FIXME: .copy() and .pop()
-                post_index = randrange(len(user_we_like_posts))
+                user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]
+                post_index = randrange(len(user_we_like_posts))  # len(user_we_like_posts) != 0 because he has posts with no likes whatsoever
                 post_id = user_we_like_posts[post_index]
                 response = self.client.post('/post/like',
                                             {'post_id': post_id},
