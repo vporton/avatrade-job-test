@@ -1,9 +1,8 @@
 import configparser
-import itertools
 import os
 import re
 from copy import deepcopy
-from random import randrange, seed
+from random import randrange
 
 import requests
 from django.conf import settings
@@ -79,7 +78,7 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
-        seed(2) # FIXME
+        # seed(2)
 
         numbers = FullTestCase.get_config()
 
