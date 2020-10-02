@@ -8,7 +8,8 @@ describe('External data retrieval', async function() {
     const username = Math.random().toString(36).slice(-8);
     const password = Math.random().toString(36).slice(-8);
     response = await axios.post(SERVER_URL + '/user/data',
-                                `username=${username}&password=${password}&email=porton@narod.ru`)
+                                `username=${username}&password=${password}&email=billgates@microsoft.com`)
+        .catch(e => console.log(e.data))
     assert.equal(response.data['code'], 'OK', "Cannot signup user: ${response.data['message']}")
     user_id = response.data['data']['user_id']
     console.log(`Created user user_id=${user_id}.`)
@@ -45,7 +46,8 @@ describe('External data retrieval', async function() {
                     console.log(`Started Clearbit user data retrieval.`)
                     break;
                 case 1:
-                    assert.equal(e.data, "notice: socialuser data received", "Can't receive social data response: \"${response}\"")
+                    assert.equal(e.data, "notice: socialuser data received",
+                                 `Can't receive social data response: \"${e.data}\"`)
                     console.log(`Data received.`)
                     communicator.close()
                     response = await axios.get(SERVER_URL + `/user/data?user_id=${user_id}`, '', {

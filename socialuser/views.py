@@ -78,6 +78,8 @@ class UserView(MyAPIView):
     def get(self, request):
         user = User.objects.get(pk=request.GET['user_id'])
         data = {field: getattr(user, field) for field in UserView.the_fields}
+        data['birth_date'] = data['birth_date'].isoformat() if data['birth_date'] else None
+
         return Response({'code': "OK", 'data': data})
 
 class RetrieveUserDataView(MyAPIView):
