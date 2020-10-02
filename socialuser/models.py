@@ -27,9 +27,9 @@ class User(AbstractUser):
     # date_joined
     birth_date = models.DateField(null=True)
     location = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=100, blank=True)    # TODO: To improve performance should be a foreign key
-    state = models.CharField(max_length=100, blank=True)   # ditto
-    country = models.CharField(max_length=100, blank=True) # ditto
+    city = models.CharField(max_length=100, blank=True)  # TODO: To improve performance should be a foreign key
+    state = models.CharField(max_length=100, blank=True)  # ditto
+    country = models.CharField(max_length=100, blank=True)  # ditto
     lat = models.FloatField(null=True)
     lng = models.FloatField(null=True)
     bio = models.TextField(blank=True)
@@ -46,10 +46,11 @@ class User(AbstractUser):
         response = requests.get(url)
         if response.status_code != 200:
             return MyErrorResponse({"code": "EXT_01",
-                                   "message": "Cannot connect to hunter.io for socialuser email verification. Try again.",
-                                   "field": "NONE"})
+                                    "message": "Cannot connect to hunter.io for socialuser email verification. Try again.",
+                                    "field": "NONE"})
         try:
-            if not response.json()['data']['result'] == 'deliverable':  # my understanding of "verifying email existence" in the technical task
+            if not response.json()['data'][
+                       'result'] == 'deliverable':  # my understanding of "verifying email existence" in the technical task
                 return MyErrorResponse({"code": "USR_03",
                                         "message": "Email does not verify.",
                                         "field": "email"})
