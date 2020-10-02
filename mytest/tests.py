@@ -73,6 +73,13 @@ class FullTestCase(TestCase):
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
                          "Allowed to use the same username twice.")
 
+        # Bill Gates apparently does not read this email.
+        response = self.client.post('/user/data',
+                                    {'username': 'billgates', 'password': User.objects.make_random_password(), 'email': 'billgates@microsoft.com'})
+        self.assertEqual(response.json(),
+                         {'code': "USR_03", 'message': "Email does not verify.", 'field': "email"},
+                         "This man does not read his email.")
+
     def test_main(self):
         """The test described in the tech specification."""
         # seed(1)
