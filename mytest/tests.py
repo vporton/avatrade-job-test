@@ -151,7 +151,7 @@ class FullTestCase(TestCase):
                 # print(' '.join(["user={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
                 #                 for h in users_with_eligible_posts]))
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
-                    print("No more users with eligibled posts.")
+                    print("No more users with eligible posts.")
                     no_more_users_with_eligible_posts = True
                     break
 
