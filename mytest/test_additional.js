@@ -7,7 +7,7 @@ const SERVER_URL = "http://127.0.0.1:8000"
 describe('External data retrieval', async function() {
     const username = Math.random().toString(36).slice(-8);
     const password = Math.random().toString(36).slice(-8);
-    response = await axios.post(SERVER_URL + '/user/signup',
+    response = await axios.post(SERVER_URL + '/user/data',
                                 `username=${username}&password=${password}&email=porton@narod.ru`)
     assert.equal(response.data['code'], 'OK', "Cannot signup user: ${response.data['message']}")
     user_id = response.data['data']['user_id']
@@ -15,6 +15,11 @@ describe('External data retrieval', async function() {
 
     auth_token = (await axios.post(SERVER_URL + '/api-token-auth/', `username=${username}&password=${password}`)).data['token']
     auth_header = `JWT ${auth_token}`
+
+//    response = await axios.get(SERVER_URL + `/user/data?user_id=${user_id}`, '', {
+//        headers: { Authorization: auth_header },
+//    })
+//    console.log(response.data)
 
     const communicator = new W3CWebSocket('ws://127.0.0.1:8000/user-watch'/*, 'echo-protocol'*/);
 
@@ -33,7 +38,7 @@ describe('External data retrieval', async function() {
                     assert.equal(e.data, `ok: user_id=${user_id}`, "Can't authenticate WebSocket user.")
                     console.log(`Authenticated with WebSocket.`)
 
-                    response = await axios.post(SERVER_URL + '/user/request-retrieve-data', `user_id=user_id`, {
+                    response = await axios.post(SERVER_URL + '/user/request-retrieve-data', `user_id=${user_id}`, {
                         headers: { Authorization: auth_header },
                     })
                     assert.equal(response.data.code, "PENDING", "Cannot start Clearbit user data retrieval.")
@@ -42,6 +47,11 @@ describe('External data retrieval', async function() {
                 case 1:
                     assert.equal(e.data, "notice: socialuser data received", "Can't receive social data response: \"${response}\"")
                     console.log(`Data received.`)
+                    communicator.close()
+                    response = await axios.get(SERVER_URL + `/user/data?user_id=${user_id}`, '', {
+                        headers: { Authorization: auth_header },
+                    })
+                    console.log(response.data)
                     break;
             }
             ++stage;

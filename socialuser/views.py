@@ -12,27 +12,29 @@ from socialuser.consumers import fill_user_data_automatically
 from socialuser.models import User
 
 
-class SignupView(MyAPIView):
+class UserView(MyAPIView):
     permission_classes = [AllowAny]
 
+    the_fields = ['username',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'birth_date',
+                  'location',
+                  'city',
+                  'state',
+                  'country',
+                  'lat',
+                  'lng',
+                  'bio',
+                  'site',
+                  'avatar']
+
     def post(self, request):
-        all_fields = ['username',
-                      'first_name',
-                      'last_name',
-                      'email',
-                      'birth_date',
-                      'location',
-                      'city',
-                      'state',
-                      'country',
-                      'lat',
-                      'lng',
-                      'bio',
-                      'site',
-                      'avatar']
+        """Sign up with a username and password."""
 
         # may raise an exception
-        values = {field: request.POST[field] for field in all_fields if field in request.POST}
+        values = {field: request.POST[field] for field in UserView.the_fields if field in request.POST}
         password = request.POST['password']
         request.POST['username']
         request.POST['email']
@@ -73,6 +75,10 @@ class SignupView(MyAPIView):
 
         return Response({'code': "OK", 'data': {'user_id': user.pk}})
 
+    def get(self, request):
+        user = User.objects.get(pk=request.GET['user_id'])
+        data = {field: getattr(user, field) for field in UserView.the_fields}
+        return Response({'code': "OK", 'data': data})
 
 class RetrieveUserDataView(MyAPIView):
     def post(self, request):

@@ -49,25 +49,25 @@ class FullTestCase(TestCase):
         return {p[0]: int(p[1]) for p in dict(config['numbers']).items()}  # Convert config['numbers'] to numbers.
 
     def test_auth(self):
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'password': 'xx'}).json(),
                          {'code': 'PAR_01', 'field': 'email', 'message': 'Missing HTTP param.'},
                          "Missing email not detected.")
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'password', 'message': 'Missing HTTP param.'},
                          "Missing password not detected.")
-        self.assertEqual(self.client.post('/user/signup', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'username', 'message': 'Missing HTTP param.'},
                          "Missing username not detected.")
 
-        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
         # Test signing up twice with the same username:
-        response = self.client.post('/user/signup',
+        response = self.client.post('/user/data',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
         self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
-        response = self.client.post('/user/signup',
+        response = self.client.post('/user/data',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
         self.assertEqual(response.json(),
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
@@ -89,7 +89,7 @@ class FullTestCase(TestCase):
             username = "socialuser{}".format(i)
             password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
-            response = self.client.post('/user/signup',
+            response = self.client.post('/user/data',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
             user_id = response.json()['data']['user_id']
@@ -109,7 +109,7 @@ class FullTestCase(TestCase):
                 post_data = {'title': title, 'text': text}
                 if randrange(1) != 0:
                     post_data['link'] = "http://example.com"
-                response = self.client.post('/post/new', post_data, HTTP_AUTHORIZATION=auth_header)
+                response = self.client.post('/post/data', post_data, HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 post_id = response.json()['data']['post_id']
                 user_posts[i].append(post_id)
