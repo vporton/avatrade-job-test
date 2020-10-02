@@ -143,7 +143,7 @@ class FullTestCase(TestCase):
 
             posts_to_like_by_this_user = list(itertools.chain(*posts_to_like_by_this_user_grouped_by_author))  # flatten array
 
-            # "socialuser performs “like” activity until he reaches max likes"
+            # "user performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
                 # print(' '.join(["socialuser={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
                 #                 for h in users_with_eligible_posts]))
