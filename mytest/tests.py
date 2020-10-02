@@ -83,7 +83,7 @@ class FullTestCase(TestCase):
         numbers = FullTestCase.get_config()
 
         if numbers['number_of_users'] == 1 and numbers['max_likes_per_user'] != 0:
-            print("Contradictory config: Only one socialuser, he cannot like himself.")
+            print("Contradictory config: Only one user, he cannot like himself.")
             return
 
         # Sign up users
