@@ -155,7 +155,7 @@ class FullTestCase(TestCase):
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
                 if not posts_to_like_by_this_user:
-                    # The tech specification does not tell what to do in this case. Let's stop for this socialuser:
+                    # The tech specification does not tell what to do in this case. Let's stop for this user:
                     break
 
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
