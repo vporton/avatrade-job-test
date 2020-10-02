@@ -119,7 +119,7 @@ class FullTestCase(TestCase):
                 print("Posted by socialuser {} (post_id {})".format(passwords[i]['username'], post_id))
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
-        # To ensure no socialuser has reached max likes yet (not strictly necessary, but simplifies flow analysis):
+        # To ensure no user has reached max likes yet (not strictly necessary, but simplifies flow analysis):
         if numbers['max_likes_per_user'] == 0:
             return
 
