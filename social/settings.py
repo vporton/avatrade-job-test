@@ -144,6 +144,8 @@ PROXIED_SERVER_URL = SERVER_URL
 # Used while debugging, to avoid spending my money:
 SKIP_EXTERNAL_CALLS = False
 
+MAX_RETRIEVE_DATA_EXECUTORS = 30
+
 try:
     from local_settings import *
 except ImportError:

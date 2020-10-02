@@ -153,3 +153,6 @@ Repeated (un)likes are ignored, because:
 Password authentication may be somehow insecure, but there is
 no other way to accomplish the tech specification as it is
 given.
+
+I use a thread pool to query Clearbit, because it is one of the
+most efficient methods.

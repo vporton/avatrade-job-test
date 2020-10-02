@@ -1,3 +1,1 @@
 * Add more API endpoints.
-
-* Use `ThreadPool` or `concurrent.futures.Executor`.

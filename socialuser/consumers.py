@@ -56,7 +56,7 @@ class UserInfoConsumer(WebsocketConsumer):
             consumer.send("notice: socialuser data received" if success else "error: cannot receive socialuser data")
 
 
-_executor = concurrent.futures.ThreadPoolExecutor(max_workers = 30)
+_executor = concurrent.futures.ThreadPoolExecutor(max_workers=settings.MAX_RETRIEVE_DATA_EXECUTORS)
 
 def fill_user_data_automatically(user):
     # Thread(target=do_fill_user_data_automatically, args=(user,)).start()
