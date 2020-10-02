@@ -2,6 +2,7 @@ import configparser
 import itertools
 import os
 import re
+from copy import deepcopy
 from random import randrange
 
 import requests
@@ -141,7 +142,9 @@ class FullTestCase(TestCase):
             posts_to_like_by_this_user_grouped_by_author = user_posts.copy()
             posts_to_like_by_this_user_grouped_by_author.pop(next_user_number)  # "users cannot like their own posts"
 
-            posts_to_like_by_this_user = list(itertools.chain(*posts_to_like_by_this_user_grouped_by_author))  # flatten array
+            # posts_to_like_by_this_user = list(itertools.chain(*posts_to_like_by_this_user_grouped_by_author))  # flatten array
+
+            user_posts2 = deepcopy(user_posts)
 
             # "user performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
@@ -150,22 +153,23 @@ class FullTestCase(TestCase):
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
                     break
 
-                # "user can ... like randrange posts from users who have at least one post with 0 likes":
+                # "user can ... like random posts from users who have at least one post with 0 likes":
                 user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
-                if not posts_to_like_by_this_user:
-                    # The tech specification does not tell what to do in this case. Let's stop for this user:
-                    break
+                # if not posts_to_like_by_this_user:
+                #     # The tech specification does not tell what to do in this case. Let's stop for this user:
+                #     break
 
-                post_to_like = int(randrange(len(posts_to_like_by_this_user)))
-                post_id = posts_to_like_by_this_user[post_to_like]
+                user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]  # FIXME: .copy() and .pop()
+                post_index = randrange(len(user_we_like_posts))
+                post_id = user_we_like_posts[post_index]
                 response = self.client.post('/post/like',
                                             {'post_id': post_id},
                                             HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
                 print("User {} liked post_id {}".format(next_user_number, post_id))
-                posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
+                user_we_like_posts.pop(post_index)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
                 if user_with_eligible_posts_info['posts_with_zero_likes'] == 0:
