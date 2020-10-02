@@ -8,8 +8,8 @@ describe('External data retrieval', async function() {
     const username = Math.random().toString(36).slice(-8);
     const password = Math.random().toString(36).slice(-8);
     response = await axios.post(SERVER_URL + '/user/data',
-                                `username=${username}&password=${password}&email=billgates@microsoft.com`)
-        .catch(e => console.log(e.data))
+                                `username=${username}&password=${password}&email=tbray@textuality.com`)
+        .catch(e => console.log(e.response. data))
     assert.equal(response.data['code'], 'OK', "Cannot signup user: ${response.data['message']}")
     user_id = response.data['data']['user_id']
     console.log(`Created user user_id=${user_id}.`)

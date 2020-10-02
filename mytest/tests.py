@@ -52,23 +52,23 @@ class FullTestCase(TestCase):
         self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'password': 'xx'}).json(),
                          {'code': 'PAR_01', 'field': 'email', 'message': 'Missing HTTP param.'},
                          "Missing email not detected.")
-        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'email': 'billgates@microsoft.com'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'email': 'tbray@textuality.com'}).json(),
                          {'code': 'PAR_01', 'field': 'password', 'message': 'Missing HTTP param.'},
                          "Missing password not detected.")
-        self.assertEqual(self.client.post('/user/data', {'password': 'xx', 'email': 'billgates@microsoft.com'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'password': 'xx', 'email': 'tbray@textuality.com'}).json(),
                          {'code': 'PAR_01', 'field': 'username', 'message': 'Missing HTTP param.'},
                          "Missing username not detected.")
 
-        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'password': 'xx', 'email': 'billgates@microsoft.com'}).json(),
+        self.assertEqual(self.client.post('/user/data', {'username': 'aa', 'password': 'xx', 'email': 'tbray@textuality.com'}).json(),
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
         # Test signing up twice with the same username:
         response = self.client.post('/user/data',
-                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'billgates@microsoft.com'})
+                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'tbray@textuality.com'})
         self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
         response = self.client.post('/user/data',
-                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'billgates@microsoft.com'})
+                                    {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'tbray@textuality.com'})
         self.assertEqual(response.json(),
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
                          "Allowed to use the same username twice.")
@@ -90,7 +90,7 @@ class FullTestCase(TestCase):
             password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/data',
-                                        {'username': username, 'password': password, 'email': 'billgates@microsoft.com'})
+                                        {'username': username, 'password': password, 'email': 'tbray@textuality.com'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
             user_id = response.json()['data']['user_id']
             print("Signed up socialuser {} (ID {})".format(username, user_id))

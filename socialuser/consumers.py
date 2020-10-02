@@ -72,33 +72,33 @@ def do_fill_user_data_automatically(user):
 
     # My interpretation of "additional information" in the tech specification:
     if not user.first_name:
-        user.first_name = person['name']['givenName']
+        user.first_name = person['name']['givenName'] or ""
     if not user.last_name:
-        user.last_name = person['name']['familyName']
+        user.last_name = person['name']['familyName'] or ""
     # ignore person['name']['fullName']
     if not user.location:
-        user.location = person['location']
+        user.location = person['location'] or ""
     if not user.city:
-        user.city = person['geo']['city']
+        user.city = person['geo']['city'] or ""
     if not user.state:
-        user.state = person['geo']['state']
+        user.state = person['geo']['state'] or ""
     if not user.country:
-        user.country = person['geo']['country']
+        user.country = person['geo']['country'] or ""
     if user.lat is None:
-        user.lat = person['geo']['lat']
+        user.lat = person['geo']['lat'] or None
     if user.lng is None:
-        user.lng = person['geo']['lng']
+        user.lng = person['geo']['lng'] or None
     if not user.bio:
-        user.bio = person['bio']
+        user.bio = person['bio'] or ""
     # Handle exceptions be sure for the case if ClearBit's concept of URL is not the same as ours:
     if not user.site:
         try:
-            user.site = person['site']
+            user.site = person['site'] or ""
         except ValidationError:
             pass
     if not user.avatar:
         try:
-            user.avatar = person['avatar']
+            user.avatar = person['avatar'] or ""
         except ValidationError:
             pass
 
