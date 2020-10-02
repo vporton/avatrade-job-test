@@ -5,13 +5,9 @@ import re
 from random import randrange
 
 import requests
-from asgiref.sync import sync_to_async, async_to_sync
-from asgiref.testing import ApplicationCommunicator
-from channels.testing import WebsocketCommunicator
 from django.conf import settings
 from django.test import TestCase, Client
 
-from socialuser.consumers import UserInfoConsumer
 from socialuser.models import User
 
 
