@@ -90,7 +90,7 @@ class FullTestCase(TestCase):
         # Sign up users
         passwords = []
         for i in range(numbers['number_of_users']):
-            username = "socialuser{}".format(i)
+            username = "user{}".format(i)
             password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
             response = self.client.post('/user/data',
@@ -117,7 +117,7 @@ class FullTestCase(TestCase):
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
                 post_id = response.json()['data']['post_id']
                 user_posts[i].append(post_id)
-                print("Posted by socialuser {} (post_id {})".format(passwords[i]['username'], post_id))
+                print("Posted by user {} (post_id {})".format(passwords[i]['username'], post_id))
             assert len(user_posts[i]) <= numbers['max_posts_per_user']
 
         # To ensure no user has reached max likes yet (not strictly necessary, but simplifies flow analysis):
