@@ -1,5 +1,5 @@
+import concurrent.futures
 import re
-from threading import Thread
 
 import clearbit
 from channels.generic.websocket import WebsocketConsumer
@@ -56,8 +56,11 @@ class UserInfoConsumer(WebsocketConsumer):
             consumer.send("notice: socialuser data received" if success else "error: cannot receive socialuser data")
 
 
+_executor = concurrent.futures.ThreadPoolExecutor(max_workers = 30)
+
 def fill_user_data_automatically(user):
-    Thread(target=do_fill_user_data_automatically, args=(user,)).start()
+    # Thread(target=do_fill_user_data_automatically, args=(user,)).start()
+    _executor.submit(do_fill_user_data_automatically, user)
 
 
 def do_fill_user_data_automatically(user):
