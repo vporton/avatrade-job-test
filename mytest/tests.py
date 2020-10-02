@@ -1,8 +1,7 @@
 import configparser
 import os
 import re
-from copy import deepcopy
-from random import randrange, seed
+from random import randrange
 
 import requests
 from django.conf import settings
@@ -78,8 +77,6 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
-        seed(2)
-
         numbers = FullTestCase.get_config()
 
         if numbers['number_of_users'] == 1 and numbers['max_likes_per_user'] != 0:
