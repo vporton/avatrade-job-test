@@ -3,7 +3,7 @@ import itertools
 import os
 import re
 from copy import deepcopy
-from random import randrange
+from random import randrange, seed
 
 import requests
 from django.conf import settings
@@ -79,7 +79,7 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
-        # seed(1)
+        seed(2) # FIXME
 
         numbers = FullTestCase.get_config()
 
@@ -129,7 +129,9 @@ class FullTestCase(TestCase):
         eligible_users = sorted(eligible_users_unsorted, key=lambda p: p['user_posts_number'], reverse=True)
 
         # Now all posts are with zero likes.
-        users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
+        users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} \
+                                     for i in range(numbers['number_of_users']) \
+                                     if len(user_posts[i]) != 0]
 
         for eligible_user in eligible_users:
             # "next user to perform a like is the user who has most posts and has not reached max likes"
@@ -153,6 +155,7 @@ class FullTestCase(TestCase):
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
                 user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]
+                assert users_with_eligible_posts[user_with_eligible_posts_index]['posts_with_zero_likes']
                 post_index = randrange(len(user_we_like_posts))  # len(user_we_like_posts) != 0 because he has posts with no likes whatsoever
                 post_id = user_we_like_posts[post_index]
                 response = self.client.post('/post/like',
