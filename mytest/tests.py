@@ -110,7 +110,7 @@ class FullTestCase(TestCase):
                 title = "Title{} (socialuser {})".format(j, i)
                 text = "Text{} (socialuser {})".format(j, i)
                 post_data = {'title': title, 'text': text}
-                if randrange(1) != 0:
+                if randrange(2) != 0:
                     post_data['link'] = "http://example.com"
                 response = self.client.post('/post/data', post_data, HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot post: {}".format(response.json().get('message')))
