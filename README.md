@@ -128,6 +128,10 @@ subdictionary.
   and if a WebSocket connection is already opened, this connection
   will be notified when the data is retrieved.
 
+* `/post/data` (POST) post a post.
+
+* `/post/read` (GET) read a post.
+
 ### WebSocket
 
 Endpoint `user-watch`.
