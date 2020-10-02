@@ -139,11 +139,6 @@ class FullTestCase(TestCase):
             auth_token = self.client.post('/api-token-auth/', passwords[next_user_number]).json()['token']
             auth_header = "JWT {}".format(auth_token)
 
-            posts_to_like_by_this_user_grouped_by_author = user_posts.copy()
-            posts_to_like_by_this_user_grouped_by_author.pop(next_user_number)  # "users cannot like their own posts"
-
-            # posts_to_like_by_this_user = list(itertools.chain(*posts_to_like_by_this_user_grouped_by_author))  # flatten array
-
             user_posts2 = deepcopy(user_posts)
 
             # "user performs “like” activity until he reaches max likes"
@@ -156,10 +151,6 @@ class FullTestCase(TestCase):
                 # "user can ... like random posts from users who have at least one post with 0 likes":
                 user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
-
-                # if not posts_to_like_by_this_user:
-                #     # The tech specification does not tell what to do in this case. Let's stop for this user:
-                #     break
 
                 user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]
                 post_index = randrange(len(user_we_like_posts))  # len(user_we_like_posts) != 0 because he has posts with no likes whatsoever
