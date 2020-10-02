@@ -73,32 +73,6 @@ class FullTestCase(TestCase):
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
                          "Allowed to use the same username twice.")
 
-    def test_data_retrieval(self):
-        username = User.objects.make_random_password()
-        password = User.objects.make_random_password()
-        response = self.client.post('/user/signup',
-                                    {'username': username, 'password': password, 'email': 'porton@narod.ru'})
-        self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
-        user_id = response.json()['data']['user_id']
-
-        auth_token = self.client.post('/api-token-auth/', {'username': username, 'password': password}).json()['token']
-        auth_header = "JWT {}".format(auth_token)
-
-        communicator = WebsocketCommunicator(UserInfoConsumer, "/FIXME")
-        connected, subprotocol = async_to_sync(communicator.connect)()
-        self.assertTrue(connected, "Cannot connect to WebSocket.")
-        async_to_sync(communicator.send_to)(text_data="/auth {}".format(auth_token))
-        response = async_to_sync(communicator).receive_from()
-        self.assertEqual(response, "ok: user_id={}".format(user_id), "Can't authenticate WebSocket user.")
-
-        response = self.client.post('/user/request-retrieve-data', {'user_id': user_id}, HTTP_AUTHORIZATION=auth_header)
-        print(response)
-        self.assertEqual(response.json(), {'code': "PENDING"}, "Cannot start Clearbit user data retrieval.")
-
-        response = async_to_sync(communicator).receive_from()
-        self.assertEqual(response, "notice: socialuser data received", "Can't receive social data response: \"{}\"".format(response))
-
-
     def test_main(self):
         """The test described in the tech specification."""
         # seed(1)

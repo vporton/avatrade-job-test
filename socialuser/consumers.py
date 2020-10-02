@@ -37,7 +37,7 @@ class UserInfoConsumer(WebsocketConsumer):
             self.send(text_data="error: cannot authenticate" + str(e))
         else:
             if not self.user.pk in UserInfoConsumer.consumers:
-                UserInfoConsumer.consumers[self.user.pk] = {}
+                UserInfoConsumer.consumers[self.user.pk] = set()
             UserInfoConsumer.consumers[self.user.pk].add(self)
             self.send(text_data="ok: user_id={}".format(self.user.pk))
 

@@ -41,6 +41,14 @@ To run only the "automated bot" described in the specification:
 (It is implemented using Django tests, because its task is related
 to testing.)
 
+More testing is done by JavaScript because with Django it appeared
+difficult to test WebSocket interactions.
+
+```sh
+yarn upgrade
+npm test --recursive "./mytest/*.js"
+```
+
 ## Used packages
 
 I use `djangorestframework` as a powerful REST framework with easy
