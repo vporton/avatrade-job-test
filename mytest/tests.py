@@ -131,7 +131,7 @@ class FullTestCase(TestCase):
         users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
 
         for eligible_user in eligible_users:
-            # "next socialuser to perform a like is the socialuser who has most posts and has not reached max likes"
+            # "next user to perform a like is the socialuser who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
 
             # See https://jpadilla.github.io/django-rest-framework-jwt/
@@ -150,7 +150,7 @@ class FullTestCase(TestCase):
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
                     break
 
-                # "socialuser can ... like randrange posts from users who have at least one post with 0 likes":
+                # "user can ... like randrange posts from users who have at least one post with 0 likes":
                 user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
                 user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
 
