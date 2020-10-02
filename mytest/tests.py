@@ -1,6 +1,7 @@
 import configparser
 import os
 import re
+from copy import deepcopy
 from random import randrange
 
 import requests
@@ -134,6 +135,8 @@ class FullTestCase(TestCase):
             # "next user to perform a like is the user who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
 
+            user_posts2 = deepcopy(user_posts)  # keep track of posts given user liked
+
             # See https://jpadilla.github.io/django-rest-framework-jwt/
             auth_token = self.client.post('/api-token-auth/', passwords[next_user_number]).json()['token']
             auth_header = "JWT {}".format(auth_token)
@@ -155,7 +158,7 @@ class FullTestCase(TestCase):
                         break
                 assert user_with_eligible_posts_info['user_number'] != next_user_number
 
-                user_we_like_posts = user_posts[user_with_eligible_posts_info['user_number']]
+                user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]
                 assert users_with_eligible_posts[user_with_eligible_posts_index]['posts_with_zero_likes']
                 post_index = randrange(len(user_we_like_posts))  # len(user_we_like_posts) != 0 because he has posts with no likes whatsoever
                 post_id = user_we_like_posts[post_index]
