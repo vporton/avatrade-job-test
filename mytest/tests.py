@@ -2,7 +2,7 @@ import configparser
 import os
 import re
 from copy import deepcopy
-from random import randrange
+from random import randrange, seed
 
 import requests
 from django.conf import settings
@@ -78,7 +78,7 @@ class FullTestCase(TestCase):
 
     def test_main(self):
         """The test described in the tech specification."""
-        # seed(2)
+        seed(2)
 
         numbers = FullTestCase.get_config()
 
@@ -132,10 +132,7 @@ class FullTestCase(TestCase):
                                      for i in range(numbers['number_of_users']) \
                                      if len(user_posts[i]) != 0]
 
-        no_more_users_with_eligible_posts = False
         for eligible_user in eligible_users:
-            if no_more_users_with_eligible_posts:
-                break
 
             # "next user to perform a like is the user who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
@@ -144,22 +141,24 @@ class FullTestCase(TestCase):
             auth_token = self.client.post('/api-token-auth/', passwords[next_user_number]).json()['token']
             auth_header = "JWT {}".format(auth_token)
 
-            user_posts2 = deepcopy(user_posts)
-
             # "user performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
                 # print(' '.join(["user={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
                 #                 for h in users_with_eligible_posts]))
-                if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
+                if not users_with_eligible_posts or \
+                        (len(users_with_eligible_posts) == 1 and users_with_eligible_posts[0]['user_number'] == next_user_number):  # "if there is no posts with 0 likes, bot stops"
                     print("No more users with eligible posts.")
-                    no_more_users_with_eligible_posts = True
                     break
 
                 # "user can ... like random posts from users who have at least one post with 0 likes":
-                user_with_eligible_posts_index = int(randrange(len(users_with_eligible_posts)))
-                user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
+                while True:
+                    user_with_eligible_posts_index = randrange(len(users_with_eligible_posts))
+                    user_with_eligible_posts_info = users_with_eligible_posts[user_with_eligible_posts_index]
+                    if user_with_eligible_posts_info['user_number'] != next_user_number:  # a little inefficient, OK for a test
+                        break
+                assert user_with_eligible_posts_info['user_number'] != next_user_number
 
-                user_we_like_posts = user_posts2[user_with_eligible_posts_info['user_number']]
+                user_we_like_posts = user_posts[user_with_eligible_posts_info['user_number']]
                 assert users_with_eligible_posts[user_with_eligible_posts_index]['posts_with_zero_likes']
                 post_index = randrange(len(user_we_like_posts))  # len(user_we_like_posts) != 0 because he has posts with no likes whatsoever
                 post_id = user_we_like_posts[post_index]
