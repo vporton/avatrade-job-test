@@ -30,8 +30,6 @@ class UserInfoConsumer(WebsocketConsumer):
             payload = VerifyJSONWebTokenSerializer()._check_payload(token=token)
             username = jwt_get_username_from_payload(payload)
             self.remove_self()  # possibly switch to different socialuser
-            with open("/home/porton/t/x.txt", 'w') as f:
-                f.write(username)
             self.user = User.objects.get(username=username)
         except (ValidationError, User.DoesNotExist) as e:
             self.send(text_data="error: cannot authenticate" + str(e))
