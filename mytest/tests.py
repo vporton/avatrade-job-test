@@ -107,8 +107,8 @@ class FullTestCase(TestCase):
 
             user_posts.append([])
             for j in range(int(randrange(numbers['max_posts_per_user'] + 1))):
-                title = "Title{} (socialuser {})".format(j, i)
-                text = "Text{} (socialuser {})".format(j, i)
+                title = "Title{} (user {})".format(j, i)
+                text = "Text{} (user {})".format(j, i)
                 post_data = {'title': title, 'text': text}
                 if randrange(2) != 0:
                     post_data['link'] = "http://example.com"
