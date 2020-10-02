@@ -132,6 +132,12 @@ subdictionary.
 
 * `/post/read` (GET) read a post.
 
+So to register _three_ POST requests are needed:
+
+1. `/user/data`
+2. `/api-token-auth/`
+3. `/user/request-retrieve-data`
+
 ### WebSocket
 
 Endpoint `user-watch`.
