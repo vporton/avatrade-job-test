@@ -165,7 +165,7 @@ class FullTestCase(TestCase):
                                  HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
                 print("User {} liked post_id {}".format(next_user_number, post_id))
-                posts_to_like_by_this_user.pop(post_to_like)  # "one socialuser can like a certain post only once"
+                posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
 
                 user_with_eligible_posts_info['posts_with_zero_likes'] -= 1
                 if user_with_eligible_posts_info['posts_with_zero_likes'] == 0:
