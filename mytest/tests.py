@@ -133,7 +133,11 @@ class FullTestCase(TestCase):
                                      for i in range(numbers['number_of_users']) \
                                      if len(user_posts[i]) != 0]
 
+        no_more_users_with_eligible_posts = False
         for eligible_user in eligible_users:
+            if no_more_users_with_eligible_posts:
+                break
+
             # "next user to perform a like is the user who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
 
@@ -145,9 +149,11 @@ class FullTestCase(TestCase):
 
             # "user performs “like” activity until he reaches max likes"
             for _ in range(numbers['max_likes_per_user']):
-                # print(' '.join(["socialuser={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
+                # print(' '.join(["user={}/posts_with_zero_likes={}".format(h['user_number'], h['posts_with_zero_likes']) \
                 #                 for h in users_with_eligible_posts]))
                 if not users_with_eligible_posts:  # "if there is no posts with 0 likes, bot stops"
+                    print("No more users with eligibled posts.")
+                    no_more_users_with_eligible_posts = True
                     break
 
                 # "user can ... like random posts from users who have at least one post with 0 likes":
