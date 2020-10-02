@@ -161,8 +161,8 @@ class FullTestCase(TestCase):
                 post_to_like = int(randrange(len(posts_to_like_by_this_user)))
                 post_id = posts_to_like_by_this_user[post_to_like]
                 response = self.client.post('/post/like',
-                                 {'post_id': post_id},
-                                 HTTP_AUTHORIZATION=auth_header)
+                                            {'post_id': post_id},
+                                            HTTP_AUTHORIZATION=auth_header)
                 self.assertEqual(response.json()['code'], 'OK', "Cannot like: {}".format(response.json().get('message')))
                 print("User {} liked post_id {}".format(next_user_number, post_id))
                 posts_to_like_by_this_user.pop(post_to_like)  # "one user can like a certain post only once"
