@@ -68,6 +68,8 @@ not specified the exact operating system.
 I use Django channels (not REST) to notify about Crearbit information
 retrival asynchronously, because it may be slow.
 
+Used Node.js for testing WebSockets, see above.
+
 ## Architecture decisions
 
 I use `django.contrib.auth.User` as the base of my User model,
@@ -90,9 +92,60 @@ default, see that file for an example bot config).
 
 ## API
 
-I use the same POST request params as model field names.
+I use the same POST/GET request params as model field names.
+Non-essential fields can be omitted.
+
+### Errors
+
+Error responses follow the format like:
+```json
+{
+  "code": "USR_04",
+  "message": "Password too weak.",
+  "field": "password"
+}
+```
+(Here `code` is the error code (see `core/misc.py`), `message` is
+the error message, and `field` is sometimes the information about
+the HTTP param name with an error.)
+
+For non-error responses, `code` is `OK` (`PENDING` for
+`/user/request-retrieve-data`) and the data is under `data`
+subdictionary.
+
+### API endpoints
+
+* `/api-token-auth/` does password authentication (`username` and
+`password` HTTP params).
+
+* `/api-token-verify/` (not used) performs token verification.
+
+* `/user/data` performs user signup (with POST) or getting
+  user data (GET)
+
+* `/user/request-retrieve-data` (POST) initiates requesting user
+  data from Clearbit. It returns `{"code": "PENDING"}` immediately
+  and if a WebSocket connection is already opened, this connection
+  will be notified when the data is retrieved.
+
+### WebSocket
+
+Endpoint `user-watch`.
+
+First send `/auth <TOKEN>` to authenticate and receive back
+`ok: user_id=<NUMBER>` or `error: cannot authenticate`.
+
+Then we will receive notices `notice: socialuser data received`
+or `error: cannot receive socialuser data` (if Clearbit retrieval
+fails).
+
+## Other notes
 
 Repeated (un)likes are ignored, because:
 
 - It was not required to detect them in the tech specification.
 - Detecting them requires additional DB queries.
+
+Password authentication may be somehow insecure, but there is
+no other way to accomplish the tech specification as it is
+given.
