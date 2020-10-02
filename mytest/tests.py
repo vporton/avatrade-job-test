@@ -131,7 +131,7 @@ class FullTestCase(TestCase):
         users_with_eligible_posts = [{'user_number': i, 'posts_with_zero_likes': len(user_posts[i])} for i in range(numbers['number_of_users'])]
 
         for eligible_user in eligible_users:
-            # "next user to perform a like is the socialuser who has most posts and has not reached max likes"
+            # "next user to perform a like is the user who has most posts and has not reached max likes"
             next_user_number = eligible_user['user_number']
 
             # See https://jpadilla.github.io/django-rest-framework-jwt/
