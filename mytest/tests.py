@@ -96,7 +96,7 @@ class FullTestCase(TestCase):
                                         {'username': username, 'password': password, 'email': 'tbray@textuality.com'})
             self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
             user_id = response.json()['data']['user_id']
-            print("Signed up socialuser {} (ID {})".format(username, user_id))
+            print("Signed up user {} (ID {})".format(username, user_id))
 
         # Post posts
         user_posts = []
