@@ -5,9 +5,13 @@ import re
 from random import randrange
 
 import requests
+from asgiref.sync import sync_to_async, async_to_sync
+from asgiref.testing import ApplicationCommunicator
+from channels.testing import WebsocketCommunicator
 from django.conf import settings
 from django.test import TestCase, Client
 
+from socialuser.consumers import UserInfoConsumer
 from socialuser.models import User
 
 
@@ -45,40 +49,55 @@ class FullTestCase(TestCase):
         return {p[0]: int(p[1]) for p in dict(config['numbers']).items()}  # Convert config['numbers'] to numbers.
 
     def test_auth(self):
-        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'password': 'xx'}).json(),
+        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx'}).json(),
                          {'code': 'PAR_01', 'field': 'email', 'message': 'Missing HTTP param.'},
                          "Missing email not detected.")
-        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'password', 'message': 'Missing HTTP param.'},
                          "Missing password not detected.")
-        self.assertEqual(self.client.post('/socialuser/signup', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/signup', {'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'PAR_01', 'field': 'username', 'message': 'Missing HTTP param.'},
                          "Missing username not detected.")
 
-        self.assertEqual(self.client.post('/socialuser/signup', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
+        self.assertEqual(self.client.post('/user/signup', {'username': 'aa', 'password': 'xx', 'email': 'porton@narod.ru'}).json(),
                          {'code': 'USR_04', 'message': 'Password too weak.', 'field': 'password'},
                          "Weak password not detected.")
 
         # Test signing up twice with the same username:
-        response = self.client.post('/socialuser/signup',
+        response = self.client.post('/user/signup',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
-        self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
-        response = self.client.post('/socialuser/signup',
+        self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
+        response = self.client.post('/user/signup',
                                     {'username': 'duplicate', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
         self.assertEqual(response.json(),
                          {'code': 'USR_05', 'message': 'User with this username already exists.', 'field': 'username'},
                          "Allowed to use the same username twice.")
 
-        response = self.client.post('/post/like', {'post_id': 1})
-        self.assertEqual(response.json(),
-                         {'code': 'AUT_01', 'message': 'The auth token is invalid.', 'field': 'TOKEN'},
-                         "Allowed to use API without auth token.")
-
     def test_data_retrieval(self):
-        response = self.client.post('/socialuser/signup',
-                                    {'username': 'porton', 'password': User.objects.make_random_password(), 'email': 'porton@narod.ru'})
-        print(response.json())
-        self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
+        username = User.objects.make_random_password()
+        password = User.objects.make_random_password()
+        response = self.client.post('/user/signup',
+                                    {'username': username, 'password': password, 'email': 'porton@narod.ru'})
+        self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
+        user_id = response.json()['data']['user_id']
+
+        auth_token = self.client.post('/api-token-auth/', {'username': username, 'password': password}).json()['token']
+        auth_header = "JWT {}".format(auth_token)
+
+        communicator = WebsocketCommunicator(UserInfoConsumer, "/FIXME")
+        connected, subprotocol = async_to_sync(communicator.connect)()
+        self.assertTrue(connected, "Cannot connect to WebSocket.")
+        async_to_sync(communicator.send_to)(text_data="/auth {}".format(auth_token))
+        response = async_to_sync(communicator).receive_from()
+        self.assertEqual(response, "ok: user_id={}".format(user_id), "Can't authenticate WebSocket user.")
+
+        response = self.client.post('/user/request-retrieve-data', {'user_id': user_id}, HTTP_AUTHORIZATION=auth_header)
+        print(response)
+        self.assertEqual(response.json(), {'code': "PENDING"}, "Cannot start Clearbit user data retrieval.")
+
+        response = async_to_sync(communicator).receive_from()
+        self.assertEqual(response, "notice: socialuser data received", "Can't receive social data response: \"{}\"".format(response))
+
 
     def test_main(self):
         """The test described in the tech specification."""
@@ -96,9 +115,9 @@ class FullTestCase(TestCase):
             username = "socialuser{}".format(i)
             password = User.objects.make_random_password()
             passwords.append({'username': username, 'password': password})
-            response = self.client.post('/socialuser/signup',
+            response = self.client.post('/user/signup',
                                         {'username': username, 'password': password, 'email': 'porton@narod.ru'})
-            self.assertEqual(response.json()['code'], 'OK', "Cannot signup socialuser: {}".format(response.json().get('message')))
+            self.assertEqual(response.json()['code'], 'OK', "Cannot signup user: {}".format(response.json().get('message')))
             user_id = response.json()['data']['user_id']
             print("Signed up socialuser {} (ID {})".format(username, user_id))
 

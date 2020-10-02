@@ -77,3 +77,4 @@ class SignupView(MyAPIView):
 class RetrieveUserDataView(MyAPIView):
     def post(self, request):
         fill_user_data_automatically(request.user)  # Will run in background in a separate thread
+        return Response({'code': "PENDING"})
