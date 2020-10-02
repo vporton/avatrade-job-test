@@ -49,8 +49,7 @@ class User(AbstractUser):
                                     "message": "Cannot connect to hunter.io for socialuser email verification. Try again.",
                                     "field": "NONE"})
         try:
-            if not response.json()['data'][
-                       'result'] == 'deliverable':  # my understanding of "verifying email existence" in the technical task
+            if not response.json()['data']['result'] == 'deliverable':  # my understanding of "verifying email existence" in the technical task
                 return MyErrorResponse({"code": "USR_03",
                                         "message": "Email does not verify.",
                                         "field": "email"})
