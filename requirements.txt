@@ -1,4 +1,4 @@
-Django==3.1.2
+Django==5.0.14
 channels==2.4.0
 djangorestframework==3.12.1
 djangorestframework-jwt==1.11.0
