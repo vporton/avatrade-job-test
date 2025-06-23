@@ -4,3 +4,4 @@ djangorestframework==3.12.1
 djangorestframework-jwt==1.11.0
 requests==2.24.0
 clearbit
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
