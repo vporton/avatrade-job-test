@@ -1,6 +1,8 @@
-Django==3.1.2
+Django==4.2.27
 channels==2.4.0
 djangorestframework==3.12.1
 djangorestframework-jwt==1.11.0
 requests==2.24.0
 clearbit
+sqlparse>=0.5.4 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.6.0 # not directly required, pinned by Snyk to avoid a vulnerability
